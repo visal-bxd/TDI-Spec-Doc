@@ -1,0 +1,462 @@
+TDI Specification
+
+June 2022
+
+**\
+**
+
+Revision History
+
+  **Date**    **Revision**   **Description**
+  ----------- -------------- -----------------
+  June 2022   001            Initial release
+
+**\
+**
+
+Contents
+
+[1 Introduction 5](#introduction)
+
+[2 TDI JSON Workflow 5](#tdi-json-workflow)
+
+[2.1 P4 Programmable Functions 6](#p4-programmable-functions)
+
+[2.2 Non- P4 Fixed Functions 7](#non--p4-fixed-functions)
+
+[3 Benefits of TDI 8](#benefits-of-tdi)
+
+[3.1 Uniform Interface 8](#uniform-interface)
+
+[3.2 Dynamic Update 8](#dynamic-update)
+
+[4 TDI APIs 8](#tdi-apis)
+
+[4.1 Infrastructure APIs 8](#infrastructure-apis)
+
+[4.1.1 TdiInfo 8](#tdiinfo)
+
+[4.1.2 TDI Init 9](#tdi-init)
+
+[4.1.2.1 Device Class 9](#device-class)
+
+[4.1.2.2 Init Class 9](#init-class)
+
+[4.1.2.3 DevMgr Class 9](#devmgr-class)
+
+[4.1.3 TDI Target 10](#tdi-target)
+
+[4.1.3.1 ProgramConfig Class 10](#programconfig-class)
+
+[4.1.3.2 P4Pipeline Class 10](#p4pipeline-class)
+
+[4.1.3.3 Target Class 11](#target-class)
+
+[4.1.4 TDI Session 11](#tdi-session)
+
+[4.1.4.1 Batching of Operation 11](#batching-of-operation)
+
+[4.1.4.2 Transaction of Operation 12](#transaction-of-operation)
+
+[4.1.5 Learn 12](#learn)
+
+[5 Table APIs 12](#_Toc103520792)
+
+[5.1 Infrastructure APIs 13](#table-apis)
+
+[5.1.1 TdiInfo 13](#tdiinfo-1)
+
+[6 Glossary 13](#glossary)
+
+[7 Related Policies, Procedures or Other References
+13](#related-policies-procedures-or-other-references)
+
+[8 Appendix 14](#appendix)
+
+[8.1 Benefits of TDI 14](#benefits-of-tdi-1)
+
+[8.1.1 Uniform Interface 14](#uniform-interface-1)
+
+[8.1.1.1 Heading 4 14](#heading-4)
+
+# Introduction
+
+Table Driven Interface (TDI) is a runtime control plane specification
+and a set of APIs that enable the management of P4 programmable and
+non-P4 fixed functions of a backend device in a uniform and dynamic way.
+TDI is a Device Independent (DI) interface and has "common code" in one
+place for IPU devices like DPDK and FPGA. Other manufactures can use TDI
+to implement their PSA or any architecture (for example, TNA or PNA).
+
+**Figure 1:** **TDI High Level Design Diagram**
+
+![](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.png){width="6.5in"
+height="4.315277777777778in"}
+
+The fixed and the P4 programmable functions use common set of JSON
+schema that describes all functions as table key and data attributes. A
+uniform API can be used for programming both fixed and P4 programmable
+functions. Also, the usage of separate JSON file for defining the
+semantics of the TDI API enables the syntax of the API to be uniform for
+all target devices and all features. It also enhances the dynamic
+upgradability the network feature attributes.
+
+# TDI JSON Workflow
+
+TDI frontend is implemented using tdi.json file and other non-p4 fixed
+function JSON files. TDI backend is implemented using context.json file
+in FPGA, but P4 DPDK backend is implemented using different layers.
+
+**Figure 2: JSON Workflow**
+
+![](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image2.png){width="6.5in"
+height="4.520833333333333in"}
+
+Characteristics of this TDI implementation:
+
+-   TDI API header layer provides the common interface for all device
+    > capabilities.
+
+-   TDI C++ implementation layer overrides the TDI interface API with
+    > the functionality specific C++ methods.
+
+-   The device specific functionalities are implemented by the backend
+    > functionality managers.
+
+-   The backend functionality managers utilize the low-level driver for
+    > configuring the device.
+
+## P4 Programmable Functions
+
+A P4 pipeline program is compiled to generate a set of files (tdi.json
+and context.json) which are used by P4Runtime, TDI library, and the
+target pipeline. P4Runtime is a gRPC based specification for the
+management of the P4 device by a controller. The P4Runtime client and
+server use P4Info.JSON file as the common message format of the P4
+program objects. P4Runtime server additionally uses the metadata related
+the P4 objects from the TDI API to program the TDI API interface. TDI
+API library uses TDI.JSON the TDI API calls to the target device
+pipeline configuration calls, and a Context.JSON can also optionally be
+used.
+
+Unlike TDI\'s predecessor (BF-RT), p4c generated JSON file contains
+externs in table format. The externs of P4Runtime objects from p4info
+needs to be mapped to TDI objects from tdi.json.
+
+**Note**: P4 DPDK TDI feature C++ classes, along with the target
+specific managers, dynamically adjust the mapping to target pipeline
+through usage of context.json.
+
+## Non- P4 Fixed Functions
+
+The management of the non-P4 fixed functions, like port management or
+traffic management, is done similar way using the JSON files. The
+semantics of a fixed function TDI API are defined by a JSON file that
+define the table attributes of the fixed function. These fixed function
+JSON are hand-written.
+
+**Note 1**: The fixed function JSON can also be generated from other
+data models. The fixed function controllers like gRPC based OpenConfig
+(gNMI, gNOI) would use the common messages defined by the YANG models of
+the fixed function objects. OpenConfig server additionally uses the
+metadata related the fixed function objects from the TDI API to program
+the TDI API interface for the message requests.
+
+**Note 2**: The dynamic update of the fixed function JSON file is
+possible, but it is not supported in P4 DPDK for now.
+
+The TDI library maps the APIs to the target device configurations. The
+mapping of fixed function TDI API to backend device configuration is
+hardcoded. You can do such mapping through usage of a file like
+context.json.
+
+The P4 programmable and non-P4 fixed function TDI tables follow same
+schema, and the organization of the fields are common. The following
+tables show compiler generated tdi.json for a P4 table and hand-written
+port.json for a port table.
+
+![](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image3.png){width="6.883720472440945in"
+height="3.6605511811023623in"}
+
+# Benefits of TDI
+
+TDI abstracts all device functionalities as tables with the keys and
+data that are define solely in JSON files, which helps to provide
+uniform API and dynamic upgradability. The following properties make the
+TDI more user-friendly.
+
+## Uniform Interface
+
+TDI provides a uniform interface for both P4 objects (for example,
+tables, actions, and action selectors) and non-P4 fixed objects (for
+example, port and QoS nodes). The uniform design concept provides the
+following capabilities:
+
+-   Programming of all features using same common set of C or C++ APIs
+    as the table keys and data are defined through JSON files.
+
+-   The implementation of each feature is hidden behind API thru C++
+    polymorphism.
+
+-   The capability of operations supported for each feature table can be
+    learned in uniform manner.
+
+-   TDI C/C++ API is program and protocol independent, like PI API.
+
+-   TDI C/C++ API is P4 architecture independent. There are no P4 table
+    or extern names reflected in the TDI API.
+
+## Dynamic Update
+
+TDI is designed to support dynamically upgrade of feature table
+semantics. The dynamic update capability provides following
+capabilities:
+
+-   P4 tables support dynamic update of table keys and data (for
+    example, SetPipelineConfig support) through separating table
+    semantics separated in files.
+
+-   Through optional use of CONTEXT files, some mapping of TDI user
+    requests target specific configuration can also be dynamically
+    updated.
+
+# TDI APIs
+
+TDI uses a set of C++/C table APIs and infrastructure APIs. These APIs
+are program, protocol, and architecture independent which enable us to
+use them in different platforms.
+
+## Infrastructure APIs
+
+Infrastructure APIs work with the table APIs to enhance TDI usability.
+These APIs are not table driven or JSON driven.
+
+### TdiInfo
+
+TdiInfo C++ class provides access to the top-level metadata extracted
+from all JSON files. During the TDI initialization, all the JSON files
+are read by TDI library, and the metadata for all tables is maintained
+in TDI library. This includes both P4 and fixed function files. All the
+table objects of the device can be accessed through TdiInfo class.
+
+TdiInfo class provides access to information such as number of tables,
+name to/from ID mapping of objects in JSON files, and table dependency
+information. For example, a control plane can access the supported port
+attributes extracted from consumed port.json file using tableFromNameGet
+method API.
+
+Refer to the TDI API User Guide for complete list of APIs.
+
+### TDI Init
+
+TDI Init APIs are used to initialize the TDI library and the target
+devices using C++ Init, DevMgr, and Device classes. TDI API supports
+multiple devices for each instantiation of TDI library.
+
+**Note**: The existing TDI library for P4 DPDK supports only one device.
+
+#### Device Class
+
+Device class represents a target device, which supports a TDI
+architecture and a list of P4 programs. A Target object represents a
+configurable sub-unit in a device. All table configuration is for a
+target. Each session is tied to a device.
+
+#### Init Class
+
+Init class is used to initialize a TDI library instance with a parameter
+to customize the features supported by backend managers.
+
+#### DevMgr Class
+
+DevMgr class represents management entity of all devices in a TDI
+library instance.
+
+Refer to the TDI API User Guide for complete list of APIs.
+
+### TDI Target
+
+TDI Target helps to establish connection with hardware using
+ProgramConfig, P4Pipeline, Target classes.
+
+#### ProgramConfig Class
+
+ProgramConfig class represents a P4 program and a list of P4Pipeline
+built using the P4 program. Each P4 program has its own TDI.JSON file.
+
+**Note**: For P4 DPDK devices, TDI can support multiple P4 programs that
+maps to separate forwarding pipelines.
+
+#### P4Pipeline Class
+
+A P4Pipeline class represents a P4 program that is mapped onto a target
+physical pipeline. Each pipeline might have its own context.json,
+pipeline binary file, and the list of physical pipelines it maps onto.
+The context.json is used to map a P4 program to a physical pipeline
+target. The scope vector is used to specify the list of physical
+pipelines that the P4 tables are shared. The use of context.json and
+scope vector is optional.
+
+**Note**: For P4 DPDK, context files are used, and a P4Pipeline is
+mapped to a single physical pipeline.
+
+The fixed function tables are not currently part of P4Pipeline, and the
+fixed function tables are shared among all P4Pipelines in a device.
+
+**Note**: TDI might support logical fixed function pipeline in future,
+where a logical fixed function pipeline resources are isolated from
+other logical fixed function pipeline resources.
+
+#### Target Class
+
+Target class represents a configuration target, which minimally is a
+whole device.
+
+**Note**: For P4 DPDK, a target is identified by a pipeline in a device.
+
+### TDI Session
+
+A TDI session supports in-order execution of operations, batching of
+operations, and atomic transaction of operations by maintaining state
+between requests. Users can control parallelism using sessions.
+
+Characteristics of TDI Session:
+
+-   The requests made in a session are guaranteed to be executed in
+    > order.
+
+-   If multiple threads using single session, the order of execution is
+    > not guaranteed.
+
+-   A single client thread can make requests on multiple sessions for
+    > different resources.
+
+    Give a heading for the code
+
+**Note**: For P4 DPDK, TDI APIs support synchronous response to the API
+calls. The synchronous responses to TDI APIs indicate passing of
+resource checking in SW, not necessarily programming to HW. Asynchronous
+error events can be sent to a registered client for any HW programming
+failures. For now, asynchronous response for the API calls is not
+supported. However, there is support for asynchronous update for certain
+events from TDI.
+
+#### Batching of Operation
+
+The batching API supports batching of multiple requests in a session to
+maximize processing of requests. By returning the requests with minimal
+processing, batching can be used to achieve higher operation handling
+rate.
+
+#### Transaction of Operation
+
+The transaction APIs support creation of transactions, which would
+pre-allocate resources prior to committing and commit atomically.
+
+**Note**: For P4 DPDK target, the transaction APIs are not supported
+currently.
+
+Characteristics of transaction APIs:
+
+-   Once a transaction has begun on a session, all other operations on
+    the resources used by the transaction are blocked.
+
+-   The 'verify' operation for a transaction is done by verifying
+    resource availability for all resource requested by the transaction.
+
+-   The 'abort' operation for a transaction is done by reversing all
+    state and resource allocations associated with the transaction.
+
+-   The 'commit' operation for a transaction is done by committing all
+    changes in the transaction to the hardware.
+
+### Learn
+
+Learn class supports the notification learn events in the data plane to
+the control plane. The control plane can register callback functions to
+be notified for different events. The learn API supports the P4 digest
+event. The digest notifications happen as part of a session, and only a
+single session can be associated with a learn object at a time.
+
+## Table APIs
+
+The base table abstraction APIs are supported by Table, TableKey,
+TableData C++ classes. These are base classes define the API, and the
+child feature classes implement the table APIs for specific features.
+
+### TdiInfo
+
+TdiInfo C++ class provides access
+
+# Glossary
+
+Optional. Consider adding terms or acronyms to the Glossary if helpful.
+Remove if not needed.
+
+  **Term**   **Definition**
+  ---------- ----------------
+             
+
+# Related Policies, Procedures or Other References
+
+Optional. Related documents may be helpful for some procedures. Remove
+if not needed.
+
+  **Reference**   **Location**
+  --------------- --------------
+                  
+
+# Appendix
+
+Optional. Always start the Appendix on a new page.
+
+This section may contain content that does not need to be part of the
+procedure but supports the process and is referred to from the procedure
+section e.g., reference tables, steps done in the system with screen
+shots.
+
+1.  Style = Steps 1st Level
+
+```{=html}
+<!-- -->
+```
+1.  Style = Steps 1st Level
+
+Body 1.
+
+## Benefits of TDI
+
+> TDI abstracts all device functionalities as tables with the keys and
+> data that are define solely in JSON files, which helps to provide
+> uniform API and dynamic upgradability. The following properties make
+> the TDI
+
+### Uniform Interface
+
+#### Heading 4
+
+Legal
+
+You may not use or facilitate the use of this document in connection
+with any infringement or other legal analysis concerning Intel products
+described herein. You agree to grant Intel a non-exclusive, royalty-free
+license to any patent claim thereafter drafted which includes subject
+matter disclosed herein.
+
+No license (express or implied, by estoppel or otherwise) to any
+intellectual property rights is granted by this document.
+
+All information provided here is subject to change without notice.
+Contact your Intel representative to obtain the latest Intel product
+specifications and roadmaps.
+
+The products described may contain design defects or errors known as
+errata which may cause the product to deviate from published
+specifications. Current characterized errata are available on request.
+
+Intel and Tofino are trademarks of Intel Corporation or its
+subsidiaries.
+
+\*Other names and brands may be claimed as the property of others.
+
+Copyright © 2022, Intel Corporation. All rights reserved.
