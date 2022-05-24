@@ -687,7 +687,31 @@ TDI supports the following typical operations on a table:
 *	Delete: Deletes an entry with the specified key.
 *	GetFirst and GetNextN: Gets a range of entries with the specified key.
 
+# TDI JSON Fields
 
+TDI uses two types of JSON files, a p4c compiler generated tdi.json file for P4 programmable functions and hand-written JSON file for fixed functions. 
+The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
+The following section explains different JSON fields in the TDI table.
 
+## Table
+* name: Name of the table.
+* id: ID of the table.
+* table_type: Type of table. It is a string mapped to enum internally.
+* size: Maximum size of the table.
+* annotations: A list of name and value pair. 
+* depends_on: ID of another table on which this table depends on. 
+**Note**: Some tables are hard dependent, for example, you cannot delete an entry in the action profile if it is present in a match action table.
+* has_const_default_action: Table has a constant default action. It is a boolean value.
+* key: Contains multiple key fields. Refer Step [#sec-key]  
+* action_specs: Contains action specific data fields. Refer Step 7.3
+* data: Contains multiple data fields. Refer Step 7.4
+* supported_operations: List of supported operations. Operations are table-wide and help in syncing all entries with hardware. These operations are target specific. 
+* attributes: Supported attributes of a table and are table-wide properties.
 
+## Key
 
+Defines the structure of a key for a table entry. It contains multiple fields, and they together form a key. 
+
+**Note**: Some tables are keyless. A keyless table contains only one entry with data and that becomes the default entry. 
+
+Only defaultEntryGet, defaultEntrySet, and defaultEntryReset  APIs are supported in the key field. The key object has following fields:
