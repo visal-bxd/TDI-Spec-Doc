@@ -410,4 +410,284 @@ tdi_status_t TdiInfo::tableFromNameGet(const std::string &name,
                                         const tdi::Table **table_ret) const;
 ~ End Proto
 
+For complete list of APIs, refer to the TDI API User Guide.
+
+##	TDI Init
+
+TDI Init APIs are used to initialize the TDI library and the target devices using C++ Init, DevMgr, and Device classes. 
+TDI API supports multiple devices for each instantiation of TDI library.
+
+**Note**: The existing TDI library for P4 DPDK supports only one device.
+
+###	Device Class
+
+Device class represents a target device, which supports a TDI architecture and a list of P4 programs. Device class provides methods 
+to create sessions and create targets used in configuring the device. 
+
+~ Begin Proto
+Device(const tdi_dev_id_t &device_id,
+         const tdi_arch_type_e &arch_type,
+         const std::vector<tdi::ProgramConfig> &device_config,
+         const std::vector<tdi_mgr_type_e> mgr_type_list,
+         void *cookie);
+  virtual tdi_status_t Device::createSession( std::shared_ptr<tdi::Session> *session) const;
+  virtual tdi_status_t Device::createTarget(std::unique_ptr<tdi::Target> *target) const;
+~ End Proto
+
+###	Init Class
+
+Init class is used to initialize a TDI library instance with a parameter to customize the features supported by backend managers.
+
+~ Begin Proto
+static tdi_status_t tdiModuleInit(
+      const std::vector<tdi_mgr_type_e> mgr_type_list);
+~ End Proto
+
+###	DevMgr Class
+
+DevMgr class represents management entity of all devices  in a TDI library instance. Using DevMgr, you can add, remove, 
+and retrieve the information about the currently added devices.
+
+~ Begin Proto
+template <typename T>
+  tdi_status_t DevMgr::deviceAdd(const tdi_dev_id_t &device_id,
+                         const tdi_arch_type_e &arch_type,
+                         const std::vector<tdi::ProgramConfig> &device_config,
+                         const std::vector<tdi_mgr_type_e> mgr_type_list,
+                         void *cookie);
+~ End Proto
+
+##	TDI Target
+
+Target classes represent the device configuration.
+
+### ProgramConfig Class
+
+ProgramConfig class represents a P4 program and a list of P4Pipeline built using the P4 program.  Each P4 program has its own TDI.JSON file.
+
+~ Begin Proto
+ProgramConfig(const std::string &prog_name,
+                const std::vector<std::string> &tdi_info_file_paths,
+                const std::vector<tdi::P4Pipeline> &p4_pipelines)
+~ End Proto
+
+
+## P4Pipeline Class
+
+A P4Pipeline class represents a P4 program that is mapped onto a target physical pipeline. Each pipeline might have its own context.json, 
+pipeline binary file, and the list of physical pipelines it maps onto.  The context.json file is used to map a P4 program to a physical pipeline target. 
+The scope vector is used to specify the list of physical pipelines that the P4 tables are shared.  The use of context.json and scope vector is optional.
+
+**Note**: For P4 DPDK, context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
+
+~ Begin Proto
+P4Pipeline(const std::string &name,
+             const std::string context_path,
+             const std::string &binary_path,
+             const std::vector<uint32_t> &scope_vec)
+~ End Proto
+
+The fixed function tables are not currently part of P4Pipeline, and the fixed function tables are shared among all P4Pipelines in a device.
+
+**Note**: TDI might support logical fixed function pipeline in future, where a logical fixed function pipeline resources are isolated from other 
+logical fixed function pipeline resources.
+
+### Target Class 
+
+Target class represents a configuration target, which is a whole device.
+
+~ Begin Proto
+Target(const tdi_dev_id_t &dev_id) : dev_id_(dev_id){};
+ Target(const tdi_dev_id_t &dev_id,
+         const tdi_pipe_id_t &pipe_id) :
+~ End Proto
+
+###	Flags Class
+
+Need to add function of this class.
+
+~ Begin Proto
+  Flags(const uint64_t &flags) : flags_(flags){};
+  virtual ~Flags() = default;
+  tdi_status_t setValue(const tdi_flags_e &flags, const bool &val);
+  tdi_status_t getValue(const tdi_flags_e &flags, bool *val) const;
+  const uint64_t &getFlags() { return flags_; };
+  uint64_t flags_ = 0;
+~ End Proto
+
+##	TDI Session
+
+A TDI session supports in-order execution, batching, and atomic transaction of operations by maintaining state between requests. 
+Users can control parallelism using sessions.
+
+Characteristics of TDI Session:
+
+*	Requests made in a session are guaranteed to be executed in order.
+*	In case of multiple threads on a single session, the order of execution is not guaranteed.
+*	A single client thread can make requests on multiple sessions for different resources.
+
+~ Begin Proto
+tdi_status_t tdi_session_create(const tdi_device_hdl *device_hdl, tdi_session_hdl **session); 
+tdi_status_t tdi_session_destroy(tdi_session_hdl *const session);
+~ End Proto
+
+**Note**: For P4 DPDK, TDI APIs support synchronous response to the API calls.  The synchronous responses to TDI APIs indicate passing of 
+resource checking in software, not necessarily programming to hardware .  Asynchronous error events can be sent to a registered client for 
+any hardware programming failures.  For now, asynchronous response for the API calls is not supported.  However, asynchronous update for certain 
+events from TDI is supported.
+
+###	Batching of Operation
+
+The batching API supports batching of multiple requests in a session to maximize processing of requests. By returning the requests with minimal processing, 
+batching can be used to achieve higher operation handling rate.
+
+~ Begin Proto
+tdi_status_t tdi_begin_batch(tdi_session_hdl *const session);
+tdi_status_t tdi_end_batch(tdi_session_hdl *const session, bool hwSynchronous);
+~ End Proto
+
+###	Atomic Transaction  of Operation
+
+The transaction APIs support creation of transactions, which would pre-allocate resources prior to committing and commit atomically.
+
+**Note**: For P4 DPDK target, the transaction APIs are not supported currently.
+
+Characteristics of transaction APIs:
+
+*	Once a transaction has begun on a session, all other operations on the resources used by the transaction are blocked.
+*	The verify operation for a transaction is done by verifying resource availability for all resources requested by the transaction.
+*	The abort operation for a transaction is done by reversing all state and resource allocations associated with the transaction.
+*	The commit operation for a transaction is done by committing all changes in the transaction to the hardware. 
+
+~ Begin Proto
+tdi_status_t tdi_begin_transaction(tdi_session_hdl *const session, bool isAtomic);
+tdi_status_t tdi_verify_transaction(tdi_session_hdl *const session);
+tdi_status_t tdi_abort_transaction(tdi_session_hdl *const session);
+tdi_status_t tdi_commit_transaction(tdi_session_hdl *const session, bool hwSynchronous);
+~ End Proto
+
+##	Learn
+
+Learn class supports the notification learn events in the data plane to the control plane. The control plane can register 
+callback functions to be notified for different events. The learn API supports the P4 digest event. The digest notifications 
+happen as part of a session, and only a single session can be associated with a learn object at a time.
+
+~ Begin Proto
+virtual tdi_status_t tdiLearnCallbackRegister(
+      const std::shared_ptr<tdi::Session> /*session*/,
+      const Target & /*dev_tgt*/,
+      const tdiCbFunction & /*callback_fn*/,
+      const void * /*cookie*/) const {
+    return TDI_SUCCESS;
+  };
+~ End Proto
+
+# Table APIs
+
+TDI tables map several P4 concepts to table semantics. These semantics have similar meanings for non-P4 tables as well. 
+Each entry in a table comprises of key and data. Key is the entity which identifies the row in the table. 
+Data is the columns which make up the table. Each key and data can consist of multiple fields, and the field information comes 
+from the JSON files used for a given table.
+
+~ Figure { #fig-image3; \
+caption: "Key and Data Representation" }
+![image3]
+~
+[image3]: media/image3.[svg,png] \
+{ height: 7cm; page-align: here }
+
+A table can or cannot contain **Actions** fields. Actions are self-explanatory in Match Action Tables (MATs), where every data field inside 
+an action in the tdi.json represents an action param. In non-MAT tables, `actions` can be used to differentiate between various forms that a data can be formed. 
+
+The C- union construct can be realized using actions
+
+~ Begin Proto
+struct table_entry {
+	struct data_fields dfs;
+	struct key_fields kfs;
+};
+struct data_fields {
+int df1;
+int df2;
+int df3;
+int df4;
+union {
+	struct action_a1 {
+		int a1df1;
+		int a1df1;
+}a1;
+	struct action_a2 {
+		int a2df1;
+		int a2df1;
+		int a2df1;
+}a2;
+	struct action_a3 {
+}a3;
+} 
+}
+struct key_fields {
+	int kf1;
+int kf2;
+}
+~ End Proto
+
+~ Begin Proto
+Key = {kf1, kf2}
+Actions = {
+a1 = {a1df1, a1df2},
+a2 = {a2df1, a2df2, a2df3},
+a3 = {}}
+Data = {df1, df2, df3, df4}
+~ End Proto
+
+The above table can be interpreted as follows when it is converted to a model:
+
+*	Key consists of two fields, kf1 and kf2.
+*	Three Actions are present.
+    *	a1 consists of two data fields.
+    *	a2 consists of three data fields.
+    *	a3 does not contain any data field (similar to a NoAction action in P4 MATs).
+*	Data consists of four data fields (df1, df2, df3, and df4). This is the data directly present on the table, also known as Common Data.
+
+Every table entry should have a (key,data). Key in the above example is straightforward and will always have {kf1, kf2}. 
+Data in the above example could have either of the 3 below depending upon the action being used by the entry.
+
+data = {a1df1, a1df2, df1, df2, df3, df4 }
+
+or
+
+data = {a2df1, a2df2, a2df3, df1, df2, df3, df4 }
+
+or 
+
+data = {df1, df2, df3, df4}
+
+If at least one action is present as part of the table structure, every entry should be associated with an action. 
+A table structure can choose to not have actions at all and just rely on data fields. 
+
+## Types of TDI Tables and Supported Operations
+
+TDI supports the following types of tables:
+
+*	Standard Table: It consists of multiple entries. Each entry has a key and data. It also contains one default entry with data only.
+
+**Note**: TDI also supports standard table without default entry. It is like standard table, but there are no default entries.
+
+*	Const  Table: A table that does not support entryAdd, entryMod, entryDel, defaultEntrySet, defaultEntryMod, and defaultEntryReset. This table type supports only get APIs like entryGet, entryGetFirst, entryGetNextN, usageGet, sizeGet, and defaultEnrtyGet.
+
+**Note**: TDI also supports const table without default entry. It is like const table, but there are no default entries.
+
+*	Keyless Table: A keyless table contains only one entry with data and that becomes the default entry. Only defaultEntryGet, defaultEntrySet, and defaultEntryReset are supported.
+*	Modify-only Table: N entries always exist. An entryAdd and entryDel are not supported. The entryMod is used to change any value. clear ()  would reset all the entries of the table. There is no default entry associated with this table.
+
+TDI supports the following typical operations on a table:
+
+*	Add: Adds an entry with the specified key and data.
+*	Modify: Modifies an entry with the specified key and data.
+*	Delete: Deletes an entry with the specified key.
+*	GetFirst and GetNextN: Gets a range of entries with the specified key.
+
+
+
+
 
