@@ -340,7 +340,8 @@ The following tables show compiler generated tdi.json for a P4 table and hand-wr
 |-------------------------------------------------------------|-------------------------------------------|
 |     P4 Table (TDI.JSON from P4C)                            |        Fixed Table (PORT.JSON)            |
 +---{width:10cm}----------------------------------------------+---------------{width:10cm}----------------+
-| "tables" : [                                                | "tables" : [                              |           
+| ~ Begin P4Example                                           |                                           |
+|"tables" : [                                                 | "tables" : [                              |           
 |    {                                                        |     {                                     |   
 |     "id" : 45300881, "name" : "routing_v4",                 |       "id" : 4278255617, "name" :         |                                
 |     "key" : [                                               | "$PORT",                                  |
@@ -364,7 +365,64 @@ The following tables show compiler generated tdi.json for a P4 table and hand-wr
 |         "id" : 29734112, "name" : "drop",                   |           "singleton" : {                 |
 |         "date" : []                                         |             "id" : 2, "name" : "$FEC",    |
 |       }, ...                                                |             ...                           |
+~ End P4Example
 +-------------------------------------------------------------+-------------------------------------------+                                                                                            
+
+P4 Table (TDI.JSON from P4C)
+
+~ Begin P4Example
+"tables" : [
+    {
+      "id" : 45300881, "name" : "routing_v4",
+      "key" : [
+        {
+          "id" : 1,"name" : "ipv4_dst",
+          "match_type" : "LPM"
+          "type" : { "type" : "bytes", "width" : "32",}
+        }
+      ],
+      "action_specs" : [
+        {
+          "id" : 19792090, "name" : "set_next_id",
+           "data" : [
+             {
+              "id" : 1, "name" : "next_id",
+              "type" : {"type" : "bytes", "width" : "32",}
+             }
+          ]
+        },
+        {
+          "id" : 29734112, "name" : "drop",
+          "date" : []
+        }, ...
+~ End P4Example
+
+Fixed Table (PORT.JSON)
+
+~ Begin P4Example
+"tables" : [
+    {
+      "id" : 4278255617, "name" : "$PORT",
+      "key" : [{"id" : 1,"name" : "$DEV_PORT",}],
+      "data" : [
+        {
+          "singleton" : {
+            "id" : 1, "name" : "$SPEED",
+            "type" : {
+              "choises" : [
+                  "BF_SPEED_1G"
+                  "BF_SPEED_10G"
+                  ...
+                  "BF_SPEED_400G"
+                 ]
+            }
+          }
+        },
+        {
+          "singleton" : {
+            "id" : 2, "name" : "$FEC",
+            ...
+~ End P4Example
 
 # Benefits of TDI  
 
