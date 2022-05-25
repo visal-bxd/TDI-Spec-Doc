@@ -276,17 +276,13 @@ interface and has “common code” in one place for devices.   Other manufactur
 (for example, TNA or PNA).
 
 
-~ Figure { #fig-image1; \
+~ Figure { #fig-tdi-high-level-design-diagram; \
 caption: "TDI High Level Design Diagram" }
-![image1](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.png)
+![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
 ~
 
-[image1]: vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.[svg,png] \
+[image1]: media/tdi-high-level-design-diagram.[svg,png] \
 { height: 7cm; page-align: here }
-
-![](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.png){width="6.5in"
-height="4.315277777777778in"}
-
 
 The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
 A uniform API can be used for programming both fixed and P4 programmable functions. Also, the usage of a separate JSON file for defining 
@@ -297,11 +293,11 @@ upgradability of the network feature attributes.
 
 TDI.JSON file acts as a contract between the control plane and frontend. TDI backend is implemented using the context.json file.
 
-~ Figure { #fig-image2; \
+~ Figure { #fig-tdi-json-workflow; \
 caption: "TDI JSON Workflow" }
-![image2]
+![tdi-json-workflow](media/tdi-json-workflow.png)
 ~
-[image2]: media/image2.[svg,png] \
+[tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
 { height: 7cm; page-align: here }
 
 Characteristics of TDI implementation:
@@ -592,11 +588,11 @@ Each entry in a table comprises of key and data. Key is the entity which identif
 Data is the columns which make up the table. Each key and data can consist of multiple fields, and the field information comes 
 from the JSON files used for a given table.
 
-~ Figure { #fig-image3; \
+~ Figure { #fig-key-and-data-representation; \
 caption: "Key and Data Representation" }
-![image3]
+![key-and-data-representation](media/key-and-data-representation.png)
 ~
-[image3]: media/image3.[svg,png] \
+[key-and-data-representation]: media/key-and-data-representation.[svg,png] \
 { height: 7cm; page-align: here }
 
 A table can or cannot contain **Actions** fields. Actions are self-explanatory in Match Action Tables (MATs), where every data field inside 
