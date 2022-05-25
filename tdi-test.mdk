@@ -732,8 +732,8 @@ The following section explains different JSON fields in the TDI table.
 
 * has_const_default_action: Table has a constant default action. It is a boolean value.
 * key: Contains multiple key fields. Refer Step [#sec-key]  
-* action_specs: Contains action specific data fields. Refer Step 7.3
-* data: Contains multiple data fields. Refer Step 7.4
+* action_specs: Contains action specific data fields. Refer Step [#sec-action_specs]
+* data: Contains multiple data fields. Refer Step [#sec-data]
 * supported_operations: List of supported operations. Operations are table-wide and help in syncing all entries with hardware. These operations are target specific. 
 * attributes: Supported attributes of a table and are table-wide properties.
 
@@ -744,3 +744,54 @@ Defines the structure of a key for a table entry. It contains multiple fields, a
 **Note**: Some tables are keyless. A keyless table contains only one entry with data and that becomes the default entry. 
 
 Only defaultEntryGet, defaultEntrySet, and defaultEntryReset  APIs are supported in the key field. The key object has following fields:
+
+* id: ID of the key.
+* name: Name of the key.
+* repeated: The field is repeated or not. If the field is repeated, it becomes an array type.
+* annotations: A list of name and value pair.
+* mandatory: Provide the key field if the mandatory field is true. If it is not mandatory, then a default value will be used. 
+* match_type:
+	* Exact: The entire value field is matched.  The data types that support exact are integer, bytes, boolean, and string.
+	* Ternary: Value and mask are matched. The supported data type is integer.
+	* LPM: Value and prefix length are matched.
+* type: Details about type of the key field.
+	*  type: If type is “bytes”, define the width field explicitly. Whereas, if the “type” field is any unsigned integer (for example, unit32), you need not define the width.
+ 	*  width: Represented in bit size. The bit size can be of any value. It does not necessarily need to be byte aligned.
+	
+## Action_specs
+
+* id: ID of the action.
+*  name: Name of the action.
+*  action_scope: Indicates whether the action is applicable to table and default, default, or table. In general, actions are always applicable to both table and default.
+*  annotations: A list of name and value pair.
+*  data: Action-specific data. If there is no action data is not available for an entry, the action considers common data, which is not part of action_spec field.
+	*  id: ID of the data.
+	*  name: Name of the data.
+	*  repeated: The field is repeated or not. If the field is repeated, it becomes an array type. 
+	*  mandatory: Refer Step [#sec-data]
+	*  read_only: Refer Step [#sec-data]
+	*  annotations: A list of name and value pair. 
+	*  type: Refer Step [#sec-data]
+
+## Data
+
+There are two types of data fields, action-specific data fields and common data fields. Action-specific data field hold more weightage than common data field. 
+
+A single data field might contain the following fields:
+
+*  mandatory: Provide the data field if the mandatory field is true. If it is not mandatory, then a default value will be used.
+*  read_only: For read-only fields, you cannot set the data field using entryAdd.
+*  singleton: Contains only one field.
+	* id: ID of the field.
+	* name: Name of the field.
+	* repeated: The field is repeated or not. If the field is repeated, it becomes an array type.
+	* annotations: A list of name and value pair.
+	* container: A recursive collection of fields. It might contain multiple fields inside it, like C structures. Container holds fields such as mandatory, read-only, and singleton.
+	* type: Details about type of the data field.
+		* type: Unsigned integer (for example, unit32).
+		* choices: This field is displayed only when the “type” is a string.
+		* default_value: Values for integer type. If a field is not mandatory, a default value must be there.
+* oneof: Contains multiple fields, but only one of those fields can be active at a given time. It consists of id, name, repeated, annotations, and type. 
+All the fields of singleton is applicable for oneof also. Refer to singleton fields for more info.
+
+
