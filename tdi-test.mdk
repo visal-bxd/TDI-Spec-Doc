@@ -340,7 +340,7 @@ The following tables show compiler generated tdi.json for a P4 table and hand-wr
 |-------------------------------------------------------------|-------------------------------------------|
 |     P4 Table (TDI.JSON from P4C)                            |        Fixed Table (PORT.JSON)            |
 +---{width:10cm}----------------------------------------------+---------------{width:10cm}----------------+
-|                                                             |                                           |
+| ~ Begin P4Example                                           | ~ Begin P4Example                         |
 |"tables" : [                                                 | "tables" : [                              |           
 |    {                                                        |     {                                     |   
 |     "id" : 45300881, "name" : "routing_v4",                 |       "id" : 4278255617, "name" :         |                                
@@ -365,6 +365,7 @@ The following tables show compiler generated tdi.json for a P4 table and hand-wr
 |         "id" : 29734112, "name" : "drop",                   |           "singleton" : {                 |
 |         "date" : []                                         |             "id" : 2, "name" : "$FEC",    |
 |       }, ...                                                |             ...                           |
+| ~ End P4Example                                             | ~ End P4Example                           |
 +-------------------------------------------------------------+-------------------------------------------+                                                                                            
 
 P4 Table (TDI.JSON from P4C)
