@@ -278,10 +278,15 @@ interface and has “common code” in one place for devices.   Other manufactur
 
 ~ Figure { #fig-image1; \
 caption: "TDI High Level Design Diagram" }
-![image1]
+![image1](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.png)
 ~
-[image1]: media/image1.[svg,png] \
+
+[image1]: vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.[svg,png] \
 { height: 7cm; page-align: here }
+
+![](vertopal_4bba087c0eb34ea58024229ce5f961ce/media/image1.png){width="6.5in"
+height="4.315277777777778in"}
+
 
 The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
 A uniform API can be used for programming both fixed and P4 programmable functions. Also, the usage of a separate JSON file for defining 
@@ -336,36 +341,34 @@ You can do such mapping through usage of a file like context.json.
 The P4 programmable and non-P4 fixed function TDI tables follow the same schema, and the organization of the fields are common. 
 The following tables show compiler generated tdi.json for a P4 table and hand-written port.json for a port table.
 
-~ Begin Proto
-|-------------------------------------------------------------|------------------------------------------------------------|
-|     P4 Table (TDI.JSON from P4C)                            |        Fixed Table (PORT.JSON)                             |
-+---{width:7cm}-----------------------------------------------+------------------------------------------------------------+
-| "tables" : [                                                | "tables" : [                                                            
-|    {                                                        |     {                                                         
-|     "id" : 45300881, "name" : "routing_v4",                 |       "id" : 4278255617, "name" :                                                          
-|     "key" : [                                               | "$PORT",
-|       {                                                     |       "key" : [{"id" : 1,"name" : 
-|         "id" : 1,"name" : "ipv4_dst",                       | "$DEV_PORT",}],
-|         "match_type" : "LPM"                                |       "data" : [
-|         "type" : { "type" : "bytes", "width" : "32",}       |         {
-        }                                                     |           "singleton" : {
-      ],                                                      |             "id" : 1, "name" : "$SPEED",
-      "action_specs" : [                                      |             "type" : {
-        {                                                     |               "choises" : [
-          "id" : 19792090, "name" : "set_next_id",            |                   "BF_SPEED_1G"
-           "data" : [                                         |                   "BF_SPEED_10G"
-             {                                                |                   ...
-              "id" : 1, "name" : "next_id",                   |                   "BF_SPEED_400G"
-              "type" : {"type" : "bytes", "width" : "32",}    |                  ]
-             }                                                |             }
-          ]                                                   |           }
-        },                                                    |         },
-        {                                                     |         {
-          "id" : 29734112, "name" : "drop",                   |           "singleton" : {
-          "date" : []                                         |             "id" : 2, "name" : "$FEC",
-        }, ...                                                |             ...
-+-------------------------------------------------------------+------------------------------------------------------------+                                                                                            
-~ End Proto
+|-------------------------------------------------------------|-------------------------------------------|
+|     P4 Table (TDI.JSON from P4C)                            |        Fixed Table (PORT.JSON)            |
++---{width:7cm}-----------------------------------------------+-------------------------------------------+
+| "tables" : [                                                | "tables" : [                              |           
+|    {                                                        |     {                                     |   
+|     "id" : 45300881, "name" : "routing_v4",                 |       "id" : 4278255617, "name" :         |                                
+|     "key" : [                                               | "$PORT",                                  |
+|       {                                                     |       "key" : [{"id" : 1,"name" :         |
+|         "id" : 1,"name" : "ipv4_dst",                       | "$DEV_PORT",}],                           |
+|         "match_type" : "LPM"                                |       "data" : [                          |
+|         "type" : { "type" : "bytes", "width" : "32",}       |         {                                 |
+|       }                                                     |           "singleton" : {                 |
+|     ],                                                      |             "id" : 1, "name" : "$SPEED",  |
+|     "action_specs" : [                                      |             "type" : {                    |
+|       {                                                     |               "choises" : [               |
+|         "id" : 19792090, "name" : "set_next_id",            |                   "BF_SPEED_1G"           |
+|          "data" : [                                         |                   "BF_SPEED_10G"          |
+|            {                                                |                   ...                     |
+|             "id" : 1, "name" : "next_id",                   |                   "BF_SPEED_400G"         |
+|             "type" : {"type" : "bytes", "width" : "32",}    |                  ]                        |
+|            }                                                |             }                             |
+|         ]                                                   |           }                               |
+|       },                                                    |         },                                |
+|       {                                                     |         {                                 |
+|         "id" : 29734112, "name" : "drop",                   |           "singleton" : {                 |
+|         "date" : []                                         |             "id" : 2, "name" : "$FEC",    |
+|       }, ...                                                |             ...                           |
++-------------------------------------------------------------+-------------------------------------------+                                                                                            
 
 # Benefits of TDI  
 
