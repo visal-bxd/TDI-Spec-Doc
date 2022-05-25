@@ -268,7 +268,7 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 +--------------------------------+------------------------------------------------------------+
 ~
 
-# 	Introduction to TDI
+# Introduction to TDI
 
 Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
 of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. TDI is a Device Independent (DI) 
@@ -307,7 +307,7 @@ Characteristics of TDI implementation:
 *	Backend functionality managers implement device-specific functionalities. 
 *	Backend functionality managers utilize the low-level driver for configuring a device. 
 
-##	P4 Programmable Functions
+## P4 Programmable Functions
 
 A P4 pipeline program is compiled to generate a set of files (tdi.json and context.json  ) which are used by P4Runtime, TDI library, 
 and the target pipeline.  P4Runtime is a gRPC based specification for the management of the P4 device by a controller. The P4Runtime 
@@ -335,40 +335,9 @@ The TDI library maps the APIs to the target device configurations. The mapping o
 You can do such mapping through usage of a file like context.json. 
 
 The P4 programmable and non-P4 fixed function TDI tables follow the same schema, and the organization of the fields are common. 
-The following tables show compiler generated tdi.json for a P4 table and hand-written port.json for a port table.
+The following examples show compiler generated tdi.json for a P4 table and hand-written port.json for a port table.
 
-|-------------------------------------------------------------|-------------------------------------------|
-|     P4 Table (TDI.JSON from P4C)                            |        Fixed Table (PORT.JSON)            |
-+---{width:10cm}----------------------------------------------+---------------{width:10cm}----------------+
-| ~ Begin P4Example                                           | ~ Begin P4Example                         |
-|"tables" : [                                                 | "tables" : [                              |           
-|    {                                                        |     {                                     |   
-|     "id" : 45300881, "name" : "routing_v4",                 |       "id" : 4278255617, "name" :         |                                
-|     "key" : [                                               | "$PORT",                                  |
-|       {                                                     |       "key" : [{"id" : 1,"name" :         |
-|         "id" : 1,"name" : "ipv4_dst",                       | "$DEV_PORT",}],                           |
-|         "match_type" : "LPM"                                |       "data" : [                          |
-|         "type" : { "type" : "bytes", "width" : "32",}       |         {                                 |
-|       }                                                     |           "singleton" : {                 |
-|     ],                                                      |             "id" : 1, "name" : "$SPEED",  |
-|     "action_specs" : [                                      |             "type" : {                    |
-|       {                                                     |               "choises" : [               |
-|         "id" : 19792090, "name" : "set_next_id",            |                   "BF_SPEED_1G"           |
-|          "data" : [                                         |                   "BF_SPEED_10G"          |
-|            {                                                |                   ...                     |
-|             "id" : 1, "name" : "next_id",                   |                   "BF_SPEED_400G"         |
-|             "type" : {"type" : "bytes", "width" : "32",}    |                  ]                        |
-|            }                                                |             }                             |
-|         ]                                                   |           }                               |
-|       },                                                    |         },                                |
-|       {                                                     |         {                                 |
-|         "id" : 29734112, "name" : "drop",                   |           "singleton" : {                 |
-|         "date" : []                                         |             "id" : 2, "name" : "$FEC",    |
-|       }, ...                                                |             ...                           |
-| ~ End P4Example                                             | ~ End P4Example                           |
-+-------------------------------------------------------------+-------------------------------------------+                                                                                            
-
-P4 Table (TDI.JSON from P4C)
+Here is the P4 Table (TDI.JSON from P4C):
 
 ~ Begin P4Example
 "tables" : [
@@ -397,7 +366,7 @@ P4 Table (TDI.JSON from P4C)
         }, ...
 ~ End P4Example
 
-Fixed Table (PORT.JSON)
+Here is the Fixed Table (PORT.JSON):
 
 ~ Begin P4Example
 "tables" : [
@@ -440,19 +409,20 @@ TDI provides a uniform interface for both P4 objects (for example, tables, actio
 *	The capability of operations supported for each feature table can be learned in uniform manner.
 *	TDI C/C++ API is program and protocol independent.    
 *	TDI C/C++ API is P4 architecture independent. There are no P4 table or extern names reflected in the TDI API.
-##	Dynamic Update 
+
+## Dynamic Update 
 
 TDI is designed to support dynamic upgrade of feature table semantics. The dynamic update capability provides following capabilities:
 
 *	P4 tables support dynamic update of table keys and data (for example, `SetForwardingPipelineConfig` support) through separating table semantics separated in files. 
 *	Through optional use of CONTEXT files, some mapping of TDI user requests target specific configuration can also be dynamically updated. 
 
-#	Infrastructure APIs
+# Infrastructure APIs
 
 TDI uses a set of C++ and C table APIs and infrastructure APIs. These APIs are program, protocol, and architecture independent which enable you to 
 use them in different platforms.  Infrastructure APIs work with the table APIs to enhance TDI usability. These APIs are not table-driven or JSON-driven.
 
-##	TdiInfo
+## TdiInfo
 
 TdiInfo C++ class provides access to the top-level metadata extracted from all JSON files. During the TDI initialization, 
 all the JSON files are read by the TDI library, and the metadata for all tables is maintained in the TDI library. 
@@ -469,14 +439,14 @@ tdi_status_t TdiInfo::tableFromNameGet(const std::string &name,
 
 For complete list of APIs, refer to the TDI API User Guide.
 
-##	TDI Init
+## TDI Init
 
 TDI Init APIs are used to initialize the TDI library and the target devices using C++ Init, DevMgr, and Device classes. 
 TDI API supports multiple devices for each instantiation of TDI library.
 
 **Note**: The existing TDI library for P4 DPDK supports only one device.
 
-###	Device Class
+### Device Class
 
 Device class represents a target device, which supports a TDI architecture and a list of P4 programs. Device class provides methods 
 to create sessions and create targets used in configuring the device. 
@@ -491,7 +461,7 @@ Device(const tdi_dev_id_t &device_id,
   virtual tdi_status_t Device::createTarget(std::unique_ptr<tdi::Target> *target) const;
 ~ End Proto
 
-###	Init Class
+### Init Class
 
 Init class is used to initialize a TDI library instance with a parameter to customize the features supported by backend managers.
 
@@ -500,7 +470,7 @@ static tdi_status_t tdiModuleInit(
       const std::vector<tdi_mgr_type_e> mgr_type_list);
 ~ End Proto
 
-###	DevMgr Class
+### DevMgr Class
 
 DevMgr class represents management entity of all devices  in a TDI library instance. Using DevMgr, you can add, remove, 
 and retrieve the information about the currently added devices.
@@ -514,7 +484,7 @@ template <typename T>
                          void *cookie);
 ~ End Proto
 
-##	TDI Target
+## TDI Target
 
 Target classes represent the device configuration.
 
@@ -559,7 +529,7 @@ Target(const tdi_dev_id_t &dev_id) : dev_id_(dev_id){};
          const tdi_pipe_id_t &pipe_id) :
 ~ End Proto
 
-###	Flags Class
+### Flags Class
 
 Need to add function of this class.
 
@@ -572,7 +542,7 @@ Need to add function of this class.
   uint64_t flags_ = 0;
 ~ End Proto
 
-##	TDI Session
+## TDI Session
 
 A TDI session supports in-order execution, batching, and atomic transaction of operations by maintaining state between requests. 
 Users can control parallelism using sessions.
@@ -593,7 +563,7 @@ resource checking in software, not necessarily programming to hardware .  Asynch
 any hardware programming failures.  For now, asynchronous response for the API calls is not supported.  However, asynchronous update for certain 
 events from TDI is supported.
 
-###	Batching of Operation
+### Batching of Operation
 
 The batching API supports batching of multiple requests in a session to maximize processing of requests. By returning the requests with minimal processing, 
 batching can be used to achieve higher operation handling rate.
@@ -603,7 +573,7 @@ tdi_status_t tdi_begin_batch(tdi_session_hdl *const session);
 tdi_status_t tdi_end_batch(tdi_session_hdl *const session, bool hwSynchronous);
 ~ End Proto
 
-###	Atomic Transaction  of Operation
+### Atomic Transaction  of Operation
 
 The transaction APIs support creation of transactions, which would pre-allocate resources prior to committing and commit atomically.
 
@@ -611,10 +581,10 @@ The transaction APIs support creation of transactions, which would pre-allocate 
 
 Characteristics of transaction APIs:
 
-*	Once a transaction has begun on a session, all other operations on the resources used by the transaction are blocked.
-*	The verify operation for a transaction is done by verifying resource availability for all resources requested by the transaction.
-*	The abort operation for a transaction is done by reversing all state and resource allocations associated with the transaction.
-*	The commit operation for a transaction is done by committing all changes in the transaction to the hardware. 
+* Once a transaction has begun on a session, all other operations on the resources used by the transaction are blocked.
+* The verify operation for a transaction is done by verifying resource availability for all resources requested by the transaction.
+* The abort operation for a transaction is done by reversing all state and resource allocations associated with the transaction.
+* The commit operation for a transaction is done by committing all changes in the transaction to the hardware. 
 
 ~ Begin Proto
 tdi_status_t tdi_begin_transaction(tdi_session_hdl *const session, bool isAtomic);
@@ -623,7 +593,7 @@ tdi_status_t tdi_abort_transaction(tdi_session_hdl *const session);
 tdi_status_t tdi_commit_transaction(tdi_session_hdl *const session, bool hwSynchronous);
 ~ End Proto
 
-##	Learn
+## Learn
 
 Learn class supports the notification learn events in the data plane to the control plane. The control plane can register 
 callback functions to be notified for different events. The learn API supports the P4 digest event. The digest notifications 
@@ -726,23 +696,23 @@ A table structure can choose to not have actions at all and just rely on data fi
 
 TDI supports the following types of tables:
 
-*	Standard Table: It consists of multiple entries. Each entry has a key and data. It also contains one default entry with data only.
+* Standard Table: It consists of multiple entries. Each entry has a key and data. It also contains one default entry with data only.
 
-**Note**: TDI also supports standard table without default entry. It is like standard table, but there are no default entries.
+  **Note**: TDI also supports standard table without default entry. It is like standard table, but there are no default entries.
 
-*	Const  Table: A table that does not support entryAdd, entryMod, entryDel, defaultEntrySet, defaultEntryMod, and defaultEntryReset. This table type supports only get APIs like entryGet, entryGetFirst, entryGetNextN, usageGet, sizeGet, and defaultEnrtyGet.
+* Const  Table: A table that does not support entryAdd, entryMod, entryDel, defaultEntrySet, defaultEntryMod, and defaultEntryReset. This table type supports only get APIs like entryGet, entryGetFirst, entryGetNextN, usageGet, sizeGet, and defaultEnrtyGet.
 
-**Note**: TDI also supports const table without default entry. It is like const table, but there are no default entries.
+  **Note**: TDI also supports const table without default entry. It is like const table, but there are no default entries.
 
-*	Keyless Table: A keyless table contains only one entry with data and that becomes the default entry. Only defaultEntryGet, defaultEntrySet, and defaultEntryReset are supported.
-*	Modify-only Table: N entries always exist. An entryAdd and entryDel are not supported. The entryMod is used to change any value. clear ()  would reset all the entries of the table. There is no default entry associated with this table.
+* Keyless Table: A keyless table contains only one entry with data and that becomes the default entry. Only defaultEntryGet, defaultEntrySet, and defaultEntryReset are supported.
+* Modify-only Table: N entries always exist. An entryAdd and entryDel are not supported. The entryMod is used to change any value. clear ()  would reset all the entries of the table. There is no default entry associated with this table.
 
 TDI supports the following typical operations on a table:
 
-*	Add: Adds an entry with the specified key and data.
-*	Modify: Modifies an entry with the specified key and data.
-*	Delete: Deletes an entry with the specified key.
-*	GetFirst and GetNextN: Gets a range of entries with the specified key.
+* Add: Adds an entry with the specified key and data.
+* Modify: Modifies an entry with the specified key and data.
+* Delete: Deletes an entry with the specified key.
+* GetFirst and GetNextN: Gets a range of entries with the specified key.
 
 # TDI JSON Fields
 
@@ -757,7 +727,9 @@ The following section explains different JSON fields in the TDI table.
 * size: Maximum size of the table.
 * annotations: A list of name and value pair. 
 * depends_on: ID of another table on which this table depends on. 
-**Note**: Some tables are hard dependent, for example, you cannot delete an entry in the action profile if it is present in a match action table.
+
+  **Note**: Some tables are hard dependent, for example, you cannot delete an entry in the action profile if it is present in a match action table.
+
 * has_const_default_action: Table has a constant default action. It is a boolean value.
 * key: Contains multiple key fields. Refer Step [#sec-key]  
 * action_specs: Contains action specific data fields. Refer Step 7.3
