@@ -8,16 +8,8 @@ Document Class: [11pt]article
 Package: [top=1in, bottom=1.25in, left=1in, right=1in]geometry
 Package: fancyhdr
 
-[TITLE]
-
-~ Begin Abstract
 Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
 of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. 
-~ End Abstract
-
-[TOC]
-[TOC=figures]
-[TOC=tables]
 
 # Terms and Definitions
 
@@ -79,14 +71,9 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 interface and has “common code” in one place for devices.   Other manufactures   can use TDI to implement their PSA or any architecture 
 (for example, TNA or PNA).
 
+**TDI High Level Design Diagram**
 
-~ Figure { #fig-tdi-high-level-design-diagram; \
-caption: "TDI High Level Design Diagram" }
 ![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
-~
-
-[tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
-{ height: 7cm; page-align: here }
 
 The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
 A uniform API can be used for programming both fixed and P4 programmable functions. Also, the usage of a separate JSON file for defining 
@@ -97,12 +84,9 @@ upgradability of the network feature attributes.
 
 TDI.JSON file acts as a contract between the control plane and frontend. TDI backend is implemented using the context.json file.
 
-~ Figure { #fig-tdi-json-workflow; \
-caption: "TDI JSON Workflow" }
+**TDI JSON Workflow**
+
 ![tdi-json-workflow](media/tdi-json-workflow.png)
-~
-[tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
-{ height: 7cm; page-align: here }
 
 Characteristics of TDI implementation:
 
@@ -236,10 +220,10 @@ The TdiInfo class provides access to information such as number of tables, name 
 and table dependency information. For example, a control plane can access the supported port attributes extracted from the 
 consumed port.json file using the `tableFromNameGet` method API.
 
-~ Begin Proto
+```html
 tdi_status_t TdiInfo::tableFromNameGet(const std::string &name,
                                         const tdi::Table **table_ret) const;
-~ End Proto
+```
 
 For complete list of APIs, refer to the TDI API User Guide.
 
@@ -269,24 +253,24 @@ Device(const tdi_dev_id_t &device_id,
 
 Init class is used to initialize a TDI library instance with a parameter to customize the features supported by backend managers.
 
-~ Begin Proto
+```html
 static tdi_status_t tdiModuleInit(
       const std::vector<tdi_mgr_type_e> mgr_type_list);
-~ End Proto
+```
 
 ### DevMgr Class
 
 DevMgr class represents management entity of all devices  in a TDI library instance. Using DevMgr, you can add, remove, 
 and retrieve the information about the currently added devices.
 
-~ Begin Proto
+```html
 template <typename T>
   tdi_status_t DevMgr::deviceAdd(const tdi_dev_id_t &device_id,
                          const tdi_arch_type_e &arch_type,
                          const std::vector<tdi::ProgramConfig> &device_config,
                          const std::vector<tdi_mgr_type_e> mgr_type_list,
                          void *cookie);
-~ End Proto
+```
 
 ## TDI Target
 
@@ -296,11 +280,11 @@ Target classes represent the device configuration.
 
 ProgramConfig class represents a P4 program and a list of P4Pipeline built using the P4 program.  Each P4 program has its own TDI.JSON file.
 
-~ Begin Proto
+```html
 ProgramConfig(const std::string &prog_name,
                 const std::vector<std::string> &tdi_info_file_paths,
                 const std::vector<tdi::P4Pipeline> &p4_pipelines)
-~ End Proto
+```
 
 
 ## P4Pipeline Class
@@ -311,12 +295,12 @@ The scope vector is used to specify the list of physical pipelines that the P4 t
 
 **Note**: For P4 DPDK, context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
 
-~ Begin Proto
+```html
 P4Pipeline(const std::string &name,
              const std::string context_path,
              const std::string &binary_path,
              const std::vector<uint32_t> &scope_vec)
-~ End Proto
+```
 
 The fixed function tables are not currently part of P4Pipeline, and the fixed function tables are shared among all P4Pipelines in a device.
 
@@ -327,24 +311,24 @@ logical fixed function pipeline resources.
 
 Target class represents a configuration target, which is a whole device.
 
-~ Begin Proto
+```html
 Target(const tdi_dev_id_t &dev_id) : dev_id_(dev_id){};
  Target(const tdi_dev_id_t &dev_id,
          const tdi_pipe_id_t &pipe_id) :
-~ End Proto
+```
 
 ### Flags Class
 
 Need to add function of this class.
 
-~ Begin Proto
+```html
   Flags(const uint64_t &flags) : flags_(flags){};
   virtual ~Flags() = default;
   tdi_status_t setValue(const tdi_flags_e &flags, const bool &val);
   tdi_status_t getValue(const tdi_flags_e &flags, bool *val) const;
   const uint64_t &getFlags() { return flags_; };
   uint64_t flags_ = 0;
-~ End Proto
+```
 
 ## TDI Session
 
@@ -357,10 +341,10 @@ Characteristics of TDI Session:
 *	In case of multiple threads on a single session, the order of execution is not guaranteed.
 *	A single client thread can make requests on multiple sessions for different resources.
 
-~ Begin Proto
+```html
 tdi_status_t tdi_session_create(const tdi_device_hdl *device_hdl, tdi_session_hdl **session); 
 tdi_status_t tdi_session_destroy(tdi_session_hdl *const session);
-~ End Proto
+```
 
 **Note**: For P4 DPDK, TDI APIs support synchronous response to the API calls.  The synchronous responses to TDI APIs indicate passing of 
 resource checking in software, not necessarily programming to hardware .  Asynchronous error events can be sent to a registered client for 
@@ -372,10 +356,10 @@ events from TDI is supported.
 The batching API supports batching of multiple requests in a session to maximize processing of requests. By returning the requests with minimal processing, 
 batching can be used to achieve higher operation handling rate.
 
-~ Begin Proto
+```html
 tdi_status_t tdi_begin_batch(tdi_session_hdl *const session);
 tdi_status_t tdi_end_batch(tdi_session_hdl *const session, bool hwSynchronous);
-~ End Proto
+```
 
 ### Atomic Transaction  of Operation
 
@@ -390,12 +374,12 @@ Characteristics of transaction APIs:
 * The abort operation for a transaction is done by reversing all state and resource allocations associated with the transaction.
 * The commit operation for a transaction is done by committing all changes in the transaction to the hardware. 
 
-~ Begin Proto
+```html
 tdi_status_t tdi_begin_transaction(tdi_session_hdl *const session, bool isAtomic);
 tdi_status_t tdi_verify_transaction(tdi_session_hdl *const session);
 tdi_status_t tdi_abort_transaction(tdi_session_hdl *const session);
 tdi_status_t tdi_commit_transaction(tdi_session_hdl *const session, bool hwSynchronous);
-~ End Proto
+```
 
 ## Learn
 
@@ -403,7 +387,7 @@ Learn class supports the notification learn events in the data plane to the cont
 callback functions to be notified for different events. The learn API supports the P4 digest event. The digest notifications 
 happen as part of a session, and only a single session can be associated with a learn object at a time.
 
-~ Begin Proto
+```html
 virtual tdi_status_t tdiLearnCallbackRegister(
       const std::shared_ptr<tdi::Session> /*session*/,
       const Target & /*dev_tgt*/,
@@ -411,7 +395,7 @@ virtual tdi_status_t tdiLearnCallbackRegister(
       const void * /*cookie*/) const {
     return TDI_SUCCESS;
   };
-~ End Proto
+```
 
 # Table APIs
 
@@ -420,19 +404,16 @@ Each entry in a table comprises of key and data. Key is the entity which identif
 Data is the columns which make up the table. Each key and data can consist of multiple fields, and the field information comes 
 from the JSON files used for a given table.
 
-~ Figure { #fig-key-and-data-representation; \
-caption: "Key and Data Representation" }
+**Key and Data Representation
+
 ![key-and-data-representation](media/key-and-data-representation.png)
-~
-[key-and-data-representation]: media/key-and-data-representation.[svg,png] \
-{ height: 7cm; page-align: here }
 
 A table can or cannot contain **Actions** fields. Actions are self-explanatory in Match Action Tables (MATs), where every data field inside 
 an action in the tdi.json represents an action param. In non-MAT tables, `actions` can be used to differentiate between various forms that a data can be formed. 
 
 The C- union construct can be realized using actions
 
-~ Begin Proto
+```html
 struct table_entry {
 	struct data_fields dfs;
 	struct key_fields kfs;
@@ -460,16 +441,16 @@ struct key_fields {
 	int kf1;
 int kf2;
 }
-~ End Proto
+```
 
-~ Begin Proto
+```cpp
 Key = {kf1, kf2}
 Actions = {
 a1 = {a1df1, a1df2},
 a2 = {a2df1, a2df2, a2df3},
 a3 = {}}
 Data = {df1, df2, df3, df4}
-~ End Proto
+```
 
 The above table can be interpreted as follows when it is converted to a model:
 
