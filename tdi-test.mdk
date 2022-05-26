@@ -272,13 +272,15 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 
 Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
 of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. TDI is a Device Independent (DI) 
-interface and has “common code” in one place for devices.   Other manufactures   can use TDI to implement their PSA or any architecture 
-(for example, TNA or PNA).
-
+interface and has “common code” in one place for devices. This characteristic helps PSAs or any architecture (for example, TNA or PNA) to adapt TDI environment.
 
 ~ Figure { #fig-tdi-high-level-design-diagram; \
 caption: "TDI High Level Design Diagram" }
 ![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
+~
+~ Figure { #fig-image1; \
+caption: "Just added to show high resolution image, but goes beyond the border" }
+![image1](media/image1)
 ~
 
 [tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
@@ -296,6 +298,10 @@ TDI.JSON file acts as a contract between the control plane and frontend. TDI bac
 ~ Figure { #fig-tdi-json-workflow; \
 caption: "TDI JSON Workflow" }
 ![tdi-json-workflow](media/tdi-json-workflow.png)
+~
+~ Figure { #fig-image2; \
+caption: "Just added to show high resolution image, but goes beyond the border" }
+![image2](media/image2)
 ~
 [tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
 { height: 7cm; page-align: here }
@@ -626,7 +632,7 @@ caption: "Key and Data Representation" }
 A table can or cannot contain **Actions** fields. Actions are self-explanatory in Match Action Tables (MATs), where every data field inside 
 an action in the tdi.json represents an action param. In non-MAT tables, `actions` can be used to differentiate between various forms that a data can be formed. 
 
-The C- union construct can be realized using actions
+The C- union construct can be realized using actions as follows:
 
 ~ Begin Proto
 struct table_entry {
@@ -676,8 +682,8 @@ The above table can be interpreted as follows when it is converted to a model:
     *	a3 does not contain any data field (similar to a NoAction action in P4 MATs).
 *	Data consists of four data fields (df1, df2, df3, and df4). This is the data directly present on the table, also known as Common Data.
 
-Every table entry should have a (key,data). Key in the above example is straightforward and will always have {kf1, kf2}. 
-Data in the above example could have either of the 3 below depending upon the action being used by the entry.
+Every table entry contains key and data. In the above example, key is straightforward and  always have {kf1, kf2}, whereas data could have 
+any of the following depending upon the action being used by the entry.
 
 data = {a1df1, a1df2, df1, df2, df3, df4 }
 
