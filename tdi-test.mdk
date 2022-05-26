@@ -280,7 +280,7 @@ caption: "TDI High Level Design Diagram" }
 ~
 ~ Figure { #fig-image1; \
 caption: "Just added to show high resolution image, but goes beyond the border" }
-![image1](media/image1)
+![image1](media/image1.png)
 ~
 
 [tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
@@ -301,7 +301,7 @@ caption: "TDI JSON Workflow" }
 ~
 ~ Figure { #fig-image2; \
 caption: "Just added to show high resolution image, but goes beyond the border" }
-![image2](media/image2)
+![image2](media/image2.png)
 ~
 [tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
 { height: 7cm; page-align: here }
