@@ -8,199 +8,6 @@ Document Class: [11pt]article
 Package: [top=1in, bottom=1.25in, left=1in, right=1in]geometry
 Package: fancyhdr
 
-Tex Header:
-  \setlength{\headheight}{30pt}
-  \setlength{\emergencystretch}{2em}
-
-Bib: references.bib
-Bib Search Url:
-
-Script: https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
-Script: bibref_no_title.js
-
-@if html {
-body.madoko {
-  font-family: utopia-std, serif;
-}
-title,titlenote,titlefooter,authors,h1,h2,h3,h4,h5 {
-  font-family: helvetica, sans-serif;
-  font-weight: bold;
-}
-pre, code {
-  font-family: monospace;
-  font-size: 10pt;
-}
-}
-
-@if tex {
-body.madoko {
-  font-family: UtopiaStd-Regular;
-}
-title,titlenote,titlefooter,authors {
-  font-family: sans-serif;
-  font-weight: bold;
-}
-pre, code {
-  font-family: LuxiMono;
-  font-size: 75%;
-}
-}
-
-Colorizer: p4
-Colorizer: proto
-Colorizer: prototext
-Colorizer: cpp
-
-.token.keyword    {
-    font-weight: bold;
-}
-
-@if html {
-p4example {
-  replace: "~ Begin P4ExampleBlock&nl;\
-                 ````p4&nl;&source;&nl;````&nl;\
-                 ~ End P4ExampleBlock";
-  padding:6pt;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  border: solid;
-  background-color: #ffffdd;
-  border-width: 0.5pt;
-}
-}
-
-@if tex {
-p4example {
-  replace: "~ Begin P4ExampleBlock&nl;\
-                 ````p4&nl;&source;&nl;````&nl;\
-                 ~ End P4ExampleBlock";
-  breakable: true;
-  padding: 6pt;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  border: solid;
-  background-color: #ffffdd;
-  border-width: 0.5pt;
-}
-}
-
-@if html {
-pseudo {
-  replace: "~ Begin PseudoBlock&nl;\
-                 ````&nl;&source;&nl;````&nl;\
-                 ~ End PseudoBlock";
-  padding: 6pt;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  border: solid;
-  background-color: #e9fce9;
-  border-width: 0.5pt;
-}
-}
-
-@if tex {
-pseudo {
-  replace: "~ Begin PseudoBlock&nl;\
-                 ````&nl;&source;&nl;````&nl;\
-                 ~ End PseudoBlock";
-  breakable : true;
-  padding: 6pt;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  background-color: #e9fce9;
-  border: solid;
-  border-width: 0.5pt;
-}
-}
-
-@if html {
-cpp {
-  replace: "~ Begin CPPblock&nl;\
-                 ````cpp&nl;&source;&nl;````&nl;\
-                 ~ End CPPblock";
-  border: solid;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e9fce9;
-  border-width: 0.5pt;
-}
-}
-
-@if tex {
-cpp {
-  replace: "~ Begin CPPblock&nl;\
-                 ````cpp&nl;&source;&nl;````&nl;\
-                 ~ End CPPblock";
-  breakable: true;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e9fce9;
-  border: solid;
-  border-width: 0.5pt;
-}
-}
-
-@if html {
-proto {
-  replace: "~ Begin Protoblock&nl;\
-                 ````proto&nl;&source;&nl;````&nl;\
-                 ~ End Protoblock";
-  border: solid;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e6ffff;
-  border-width: 0.5pt;
-}
-}
-
-@if tex {
-proto {
-  replace: "~ Begin Protoblock&nl;\
-                 ````proto&nl;&source;&nl;````&nl;\
-                 ~ End Protoblock";
-  breakable: true;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e6ffff;
-  border: solid;
-  border-width: 0.5pt;
-}
-}
-
-@if html {
-prototext {
-  replace: "~ Begin Prototextblock&nl;\
-                 ````prototext&nl;&source;&nl;````&nl;\
-                 ~ End Prototextblock";
-  border: solid;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e6ffff;
-  border-width: 0.5pt;
-}
-}
-
-@if tex {
-prototext {
-  replace: "~ Begin Prototextblock&nl;\
-                 ````prototext&nl;&source;&nl;````&nl;\
-                 ~ End Prototextblock";
-  breakable: true;
-  margin-top: 6pt;
-  margin-bottom: 6pt;
-  padding: 6pt;
-  background-color: #e6ffff;
-  border: solid;
-  border-width: 0.5pt;
-  
-}
-}
-
 [TITLE]
 
 ~ Begin Abstract
@@ -214,9 +21,6 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 
 # Terms and Definitions
 
-~ TableFigure { #terms-and-definitions; \
-    caption: "Terms and Definitions"; \
-    page-align: forcehere; }
 |--------------------------------|------------------------------------------------------------|
 |     Terms                      |        Definitions                                         |
 +---{width:4cm}------------------+------------------------------------------------------------+
@@ -266,7 +70,7 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 +--------------------------------+------------------------------------------------------------+
 | TNA                            | Tofino Native Architecture                                 |
 +--------------------------------+------------------------------------------------------------+
-~
+
 
 # Introduction to TDI
 
@@ -339,7 +143,7 @@ The following examples show compiler generated tdi.json for a P4 table and hand-
 
 Here is the P4 Table (TDI.JSON from P4C):
 
-~ Begin P4Example
+```html
 "tables" : [
     {
       "id" : 45300881, "name" : "routing_v4",
@@ -364,11 +168,11 @@ Here is the P4 Table (TDI.JSON from P4C):
           "id" : 29734112, "name" : "drop",
           "date" : []
         }, ...
-~ End P4Example
+```
 
 Here is the Fixed Table (PORT.JSON):
 
-~ Begin P4Example
+```html
 "tables" : [
     {
       "id" : 4278255617, "name" : "$PORT",
@@ -391,7 +195,7 @@ Here is the Fixed Table (PORT.JSON):
           "singleton" : {
             "id" : 2, "name" : "$FEC",
             ...
-~ End P4Example
+```
 
 # Benefits of TDI  
 
