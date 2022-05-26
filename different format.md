@@ -42,7 +42,7 @@ interface and has “common code” in one place for devices.   Other manufactur
 
 **TDI High Level Design Diagram**
 
-![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
+![image1](media/image1.png)
 
 The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
 A uniform API can be used for programming both fixed and P4 programmable functions. Also, the usage of a separate JSON file for defining 
@@ -55,7 +55,7 @@ TDI.JSON file acts as a contract between the control plane and frontend. TDI bac
 
 **TDI JSON Workflow**
 
-![tdi-json-workflow](media/tdi-json-workflow.png)
+![image2](media/image2.png)
 
 Characteristics of TDI implementation:
 
