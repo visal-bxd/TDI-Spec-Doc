@@ -278,10 +278,6 @@ interface and has “common code” in one place for devices. This characteristi
 caption: "TDI High Level Design Diagram" }
 ![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
 ~
-~ Figure { #fig-image1; \
-caption: "Just added to show high resolution image, but goes beyond the border" }
-![image1](media/image1.png)
-~
 
 [tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
 { height: 7cm; page-align: here }
@@ -299,10 +295,7 @@ TDI.JSON file acts as a contract between the control plane and frontend. TDI bac
 caption: "TDI JSON Workflow" }
 ![tdi-json-workflow](media/tdi-json-workflow.png)
 ~
-~ Figure { #fig-image2; \
-caption: "Just added to show high resolution image, but goes beyond the border" }
-![image2](media/image2.png)
-~
+
 [tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
 { height: 7cm; page-align: here }
 
