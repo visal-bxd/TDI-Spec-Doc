@@ -320,8 +320,7 @@ and the target pipeline.  P4Runtime is a gRPC based specification for the manage
 client and server use the p4runtime.proto    as the common message format of the P4 program objects. P4Runtime server additionally 
 uses the metadata related to the P4 objects from the TDI API to program the TDI API interface.   
 
-Unlike TDI's predecessor (BFRT), p4c generated JSON file contains externs  in table format. The externs of P4Runtime objects from p4info  
-needs to be mapped to TDI objects from tdi.json.
+The externs of P4Runtime objects from p4info needs to be mapped to TDI objects from tdi.json.
 
 **Note**: P4 DPDK TDI feature C++ classes along with the target specific managers, dynamically adjust the mapping to target pipeline by using the context.json file.
 
@@ -798,6 +797,6 @@ A single data field might contain the following fields:
 		* choices: This field is displayed only when the “type” is a string.
 		* default_value: Values for integer type. If a field is not mandatory, a default value must be there.
 * oneof: Contains multiple fields, but only one of those fields can be active at a given time. It consists of id, name, repeated, annotations, and type. 
-All the fields of singleton is applicable for oneof also. Refer to singleton fields for more info.
+All the fields of singleton are applicable for oneof also. Refer to singleton fields for more info.
 
 
