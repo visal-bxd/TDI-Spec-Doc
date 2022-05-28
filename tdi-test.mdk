@@ -284,6 +284,11 @@ caption: "TDI High Level Design Diagram" }
 ![drawing3](media/drawing3.png)
 ~
 
+~ Figure { #fig-drawing4; \
+caption: "TDI High Level Design Diagram" }
+![drawing4](media/drawing4.png)
+~
+
 [tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
 { height: 7cm; page-align: here }
 
