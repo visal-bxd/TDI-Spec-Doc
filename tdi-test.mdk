@@ -308,9 +308,9 @@ Characteristics of TDI implementation:
 
 ## P4 Programmable Functions
 
-A P4 pipeline program is compiled to generate a set of files (tdi.json and context.json  ) which are used by P4Runtime, TDI library, 
-and the target pipeline.  P4Runtime is a gRPC based specification for the management of the P4 device by a controller. The P4Runtime 
-client and server use the p4runtime.proto    as the common message format of the P4 program objects. P4Runtime server additionally 
+A P4 pipeline program is compiled to generate a set of files (tdi.json and context.json  ) which are used by P4Runtime [@P4Runtime], TDI library, 
+and the target pipeline.  P4Runtime is a gRPC [@gRPC] based specification for the management of the P4 device by a controller. The P4Runtime 
+client and server use the p4runtime.proto [@p4runtime.proto] as the common message format of the P4 program objects. P4Runtime server additionally 
 uses the metadata related to the P4 objects from the TDI API to program the TDI API interface.   
 
 The externs of P4Runtime objects from p4info needs to be mapped to TDI objects from tdi.json.
@@ -323,7 +323,7 @@ The management of non-P4 fixed functions, like port management or traffic manage
 The semantics of a fixed function TDI API are defined by a JSON file that defines the table attributes of the fixed function. 
 These fixed function JSONs are hand-written.
 
-**Note 1**: You can also generate fixed function JSON from other data models. The fixed function controllers like gRPC-based OpenConfig (gNMI, gNOI) 
+**Note 1**: You can also generate fixed function JSON from other data models. The fixed function controllers like gRPC-based OpenConfig [OpenConfig] (gNMI, gNOI) 
 use the common messages defined by the YANG models of the fixed function objects. OpenConfig server additionally uses the metadata related to the 
 fixed function objects from the TDI API to program the TDI API interface for the message requests. 
 
