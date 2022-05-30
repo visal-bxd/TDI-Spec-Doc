@@ -323,7 +323,7 @@ The management of non-P4 fixed functions, like port management or traffic manage
 The semantics of a fixed function TDI API are defined by a JSON file that defines the table attributes of the fixed function. 
 These fixed function JSONs are hand-written.
 
-**Note 1**: You can also generate fixed function JSON from other data models. The fixed function controllers like gRPC-based OpenConfig [OpenConfig] (gNMI, gNOI) 
+**Note 1**: You can also generate fixed function JSON from other data models. The fixed function controllers like gRPC-based OpenConfig [@OpenConfig] (gNMI, gNOI) 
 use the common messages defined by the YANG models of the fixed function objects. OpenConfig server additionally uses the metadata related to the 
 fixed function objects from the TDI API to program the TDI API interface for the message requests. 
 
