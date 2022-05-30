@@ -272,7 +272,7 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 
 Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
 of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. TDI is a Device Independent (DI) 
-interface and has “common code” in one place for devices. This characteristic helps PSAs [PSA] or any architecture (for example, TNA or PNA) to adapt TDI environment.
+interface and has “common code” in one place for devices. This characteristic helps PSAs [@PSA] or any architecture (for example, TNA or PNA) to adapt TDI environment.
 
 ~ Figure { #fig-tdi-high-level-design-diagram; \
 caption: "TDI High Level Design Diagram" }
