@@ -230,7 +230,7 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 | Fixed Function                 | Non-P4 functionalities (for example, port management       |
 |                                | and traffic management).                                   |
 +--------------------------------+------------------------------------------------------------+
-| MAT                            | An open source high performance Remote Procedure Call (RPC)|
+| gRPC                            | An open source high performance Remote Procedure Call (RPC)|
 |                                |  framework.                                                |
 +--------------------------------+------------------------------------------------------------+
 | MAT                            | Match Action Table                                         |
@@ -318,7 +318,7 @@ uses the metadata related to the P4 objects from the TDI API to program the TDI 
 
 The externs of P4Runtime objects from p4info needs to be mapped to TDI objects from tdi.json.
 
-**Note**: P4 DPDK TDI feature C++ classes along with the target specific managers, dynamically adjust the mapping to target pipeline by using the context.json file.
+**Note**: P4-DPDK TDI feature C++ classes along with the target specific managers, dynamically adjust the mapping to target pipeline by using the context.json file.
 
 ##	Non-P4 Fixed Functions
 
@@ -330,7 +330,7 @@ These fixed function JSONs are hand-written.
 use the common messages defined by the YANG models [@YANGmodel] of the fixed function objects. OpenConfig server additionally uses the metadata related to the 
 fixed function objects from the TDI API to program the TDI API interface for the message requests. 
 
-**Note 2**: The dynamic update of the fixed function JSON file is possible, but it is not supported in P4 DPDK for now.
+**Note 2**: The dynamic update of the fixed function JSON file is possible, but it is not supported in P4-DPDK [@P4DPDK] for now.
 
 The TDI library maps the APIs to the target device configurations. The mapping of fixed function TDI API to backend device configuration is hardcoded. 
 You can do such mapping through usage of a file like context.json. 
@@ -445,7 +445,7 @@ For complete list of APIs, refer to the TDI API User Guide.
 TDI Init APIs are used to initialize the TDI library and the target devices using C++ Init, DevMgr, and Device classes. 
 TDI API supports multiple devices for each instantiation of TDI library.
 
-**Note**: The existing TDI library for P4 DPDK supports only one device.
+**Note**: The existing TDI library for P4-DPDK [@P4DPDK] supports only one device.
 
 ### Device Class
 
@@ -506,7 +506,7 @@ A P4Pipeline class represents a P4 program that is mapped onto a target physical
 pipeline binary file, and the list of physical pipelines it maps onto.  The context.json file is used to map a P4 program to a physical pipeline target. 
 The scope vector is used to specify the list of physical pipelines that the P4 tables are shared.  The use of context.json and scope vector is optional.
 
-**Note**: For P4 DPDK, context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
+**Note**: For P4-DPDK [@P4DPDK], context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
 
 ~ Begin Proto
 P4Pipeline(const std::string &name,
@@ -559,7 +559,7 @@ tdi_status_t tdi_session_create(const tdi_device_hdl *device_hdl, tdi_session_hd
 tdi_status_t tdi_session_destroy(tdi_session_hdl *const session);
 ~ End Proto
 
-**Note**: For P4 DPDK, TDI APIs support synchronous response to the API calls.  The synchronous responses to TDI APIs indicate passing of 
+**Note**: For P4-DPDK [@P4DPDK], TDI APIs support synchronous response to the API calls.  The synchronous responses to TDI APIs indicate passing of 
 resource checking in software, not necessarily programming to hardware .  Asynchronous error events can be sent to a registered client for 
 any hardware programming failures.  For now, asynchronous response for the API calls is not supported.  However, asynchronous update for certain 
 events from TDI is supported.
@@ -578,7 +578,7 @@ tdi_status_t tdi_end_batch(tdi_session_hdl *const session, bool hwSynchronous);
 
 The transaction APIs support creation of transactions, which would pre-allocate resources prior to committing and commit atomically.
 
-**Note**: For P4 DPDK target, the transaction APIs are not supported currently.
+**Note**: For P4-DPDK target [@P4DPDK], the transaction APIs are not supported currently.
 
 Characteristics of transaction APIs:
 
