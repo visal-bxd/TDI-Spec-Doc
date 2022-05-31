@@ -230,6 +230,9 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 | Fixed Function                 | Non-P4 functionalities (for example, port management       |
 |                                | and traffic management).                                   |
 +--------------------------------+------------------------------------------------------------+
+| MAT                            | An open source high performance Remote Procedure Call (RPC)|
+|                                |  framework.                                                |
++--------------------------------+------------------------------------------------------------+
 | MAT                            | Match Action Table                                         |
 +--------------------------------+------------------------------------------------------------+
 | P4C                            | P4 Compiler                                                |
@@ -324,7 +327,7 @@ The semantics of a fixed function TDI API are defined by a JSON file that define
 These fixed function JSONs are hand-written.
 
 **Note 1**: You can also generate fixed function JSON from other data models. The fixed function controllers like gRPC-based OpenConfig [@OpenConfig] (gNMI, gNOI) 
-use the common messages defined by the YANG models of the fixed function objects. OpenConfig server additionally uses the metadata related to the 
+use the common messages defined by the YANG models [@YANGmodel] of the fixed function objects. OpenConfig server additionally uses the metadata related to the 
 fixed function objects from the TDI API to program the TDI API interface for the message requests. 
 
 **Note 2**: The dynamic update of the fixed function JSON file is possible, but it is not supported in P4 DPDK for now.
