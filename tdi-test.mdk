@@ -425,7 +425,7 @@ use them in different platforms.  Infrastructure APIs work with the table APIs t
 
 ## TdiInfo
 
-TdiInfo C++ class provides access to the top-level metadata extracted from all JSON files. During the TDI initialization, 
+TdiInfo C++ class provides access to the top-level metadata extracted from all JSON files of a P4 program. During the TDI initialization, 
 all the JSON files are read by the TDI library, and the metadata for all tables is maintained in the TDI library. 
 This includes both P4 and fixed function files. All the table objects of the device can be accessed through the TdiInfo class. 
 
@@ -437,6 +437,9 @@ consumed port.json file using the `tableFromNameGet` method API.
 tdi_status_t TdiInfo::tableFromNameGet(const std::string &name,
                                         const tdi::Table **table_ret) const;
 ~ End Proto
+
+For each of the tables in a TdiInfo object, there are TableInfo objects which contains the metadata of each table. 
+TableInfo in turn contains a list of KeyFieldInfo, DataFieldInfo, and ActionInfo. These “info” classes contain the metadata for the corresponding TDI objects.  
 
 For complete list of APIs, refer to the TDI API User Guide.
 
@@ -574,7 +577,7 @@ tdi_status_t tdi_begin_batch(tdi_session_hdl *const session);
 tdi_status_t tdi_end_batch(tdi_session_hdl *const session, bool hwSynchronous);
 ~ End Proto
 
-### Atomic Transaction  of Operation
+### Transaction  of Operation
 
 The transaction APIs support creation of transactions, which would pre-allocate resources prior to committing and commit atomically.
 
