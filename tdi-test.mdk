@@ -535,7 +535,7 @@ Target(const tdi_dev_id_t &dev_id) : dev_id_(dev_id){};
 
 ### Flags Class
 
-Need to add function of this class.
+This class contains flags required for every API or it can be defined by different targets. The flag values are target specific.
 
 ~ Begin Proto
   Flags(const uint64_t &flags) : flags_(flags){};
@@ -797,5 +797,53 @@ A single data field might contain the following fields:
 		* default_value: Values for integer type. If a field is not mandatory, a default value must be there.
 * oneof: Contains multiple fields, but only one of those fields can be active at a given time. It consists of id, name, repeated, annotations, and type. 
 All the fields of singleton are applicable for oneof also. Refer to singleton fields for more info.
+
+# Table APIs
+
+The base table abstraction APIs are supported by Table, TableKey, and TableData C++ classes. These are base classes that define the API. 
+The child feature classes implement the table APIs for specific features.
+
+## Table
+
+Table function consists of core functions and helper functions. 
+
+**Core Function**: It supports the operations related to the table itself. For example, entryMod and entryGet. 
+
+For complete list of APIs and functions, refer to the TDI API User Guide.
+
+**Helper Function**: It supports the operations related to the key and data fields. For example, tableInfoGet, keyAllocate, and attributeAllocate.
+
+For complete list of APIs and functions, refer to the TDI API User Guide.
+
+### TableInfo
+
+TableInfo class contains metadata of a TDI table in a TDI.JSON. It maintains information like KeyFieldInfo, DataFieldInfo, ActionInfo which corresponds 
+to a table’s constituent fields in TDI.JSON entry of a table. Also, the public methods correspond to the retrieving these constituent objects, 
+like keyFieldGet(), dataFieldGet(), actionGet().
+
+## TableKey
+
+The TableKey class abstracts the table key values. For each key field type, a child KeyFieldValue class represents the field (for example, `KeyFieldValueTernary`). 
+The supported key field types are Exact, Ternary, Range, and LPM.
+
+The parameters of the value that a key field can take depends on the match type.  The supported value for different key field type are as follows: 
+
+* Exact = (value); 
+* Ternary = (value, mask); 
+* LPM = (value, prefix length); 
+* Range = (low, high);
+
+Value, mask, low, and high support input as byte arrays in network order. For example, uint_64 field can also be used with an array of (uint8_t *) with 8 byte length. 
+
+The Optional key field type is specific to PSA architecture, and the support for it can be defined in the PSA architecture specific code. 
+
+PSA architecture APIs are available at https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp 
+
+
+
+
+
+
+
 
 [BIB]
