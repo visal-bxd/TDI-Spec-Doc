@@ -839,11 +839,183 @@ The Optional key field type is specific to PSA architecture, and the support for
 
 PSA architecture APIs are available at https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp 
 
+Use the following supported data types as the values of the key fields:
 
+* Basic Type: The supported basic data types are uint8_t, uint16_t, uint32_t, and  uint64_t.
 
+	* All the above data types are mapped to data type enum TDI_FIELD_DATA_TYPE_UINT64, but the byte size details change as per the size.
 
+	* There are two constructor variants which can be used for each of the above types. One is the templatized version and the other is the byte array 
+	version (uint8_t).
 
+	* All match types are supported with all of these basic primitive types.
 
+* Variable Size: The supported variable data type is uint8_t * + size_t.
 
+	* These data types are mapped to TDI_FIELD_DATA_TYPE_BYTE_STREAM. Only byte array constructors are applicable for fields of these types.
+
+* String: The supported string data type is std::string *.
+
+	* Currently there are two types of strings, unbound and bound. Unbound strings can take any value. Bound strings are limited to a set of options called “choices”, which is a set of string literals in the JSON. The latter is used for enums too.
+
+### TableKey Data Model
+
+P4 compiler generates the data model of the key field using P4 program table key (for examle, hdr.ethernet.srcAddr) and associated P4 table match type defined. 
+Though the runtime would only have the key field ID, the generated data model will have key attributes and key field IDs. 
+The key field attributes are embedded in the KeyFieldValue object associated with the field ID. This ensures the correct setting of key field type.
+
+The following examples show the TableKey data model for exact match type.
+
+P4 Program:
+
+~ Begin P4Example
+key = {
+  hdr.ethernet.srcAddr: exact;
+}
+~ End P4Example
+
+Data Model:
+
+~ Begin Prototext
+"key" : [
+  {
+    "id" : 1,
+    "name" :    "hdr.ethernet.srcAddr",
+    "repeated" : false,
+    "annotations" : [],
+    "mandatory" : false,
+    "match_type" : "Exact",
+    "type" : {
+      "type" : "bytes",
+      "width" : 48
+    }
+  }
+~End Prototext
+
+The metadata information of a key field is embedded in KeyFieldInfo class. The KeyFieldInfo objects are accessible from TableInfo object. 
+It maintains information like match type and size, which corresponds to a key’s attributes in TDI.JSON table key field. 
+Also, the public methods correspond to retrieving these key attributes in TDI JSON. 
+For example, use tdi_match_type_e & KeyFieldInfo::matchTypeGet() to get match type of key field.
+
+## TableData
+
+The TableData class supports the following data field related operations to set or get values.  TableData class methods support set and get of all supported fields. 
+Some of the supported fields are:
+
+* Basic Type: (uint8_t, uint16_t, uint32_t, uint64_t)
+* Variable Size (uint8_t * + size_t)
+* String (std::string *)
+* Array (std::vector<> &array)
+
+~ TableFigure { #terms-and-definitions; \
+    caption: "Terms and Definitions"; \
+    page-align: forcehere; }
+|--------------------------------|-------------------------------------------------------------------------|
+|     Terms                      |        Definitions                                                      |
++---{width:2cm}------------------+-------------------------------------------------------------------------+
+| Basic Type                     | virtual tdi_status_t TdiData::setValue(const tdi_id_t &field_id,        |
+|                                |                               const uint32_t &value) = 0;               |
++--------------------------------+-------------------------------------------------------------------------+
+| Variable Size                  | virtual tdi_status_t TdiData::setValue(const tdi_id_t &field_id,        |
+|                                |                              const uint8_t *value,                      |
+|                                |                              const size_t &size) = 0;                   |
++--------------------------------+-------------------------------------------------------------------------+
+| Fixed Function                 | virtual tdi_status_t TdiData::setValue(const tdi_id_t &field_id,        |
+|                                |                              const std::vector<std::string> &arr) = 0;  |
++--------------------------------+-------------------------------------------------------------------------+
+
+~
+
+### TableData Data Model
+
+P4 compiler generates the data model for the action and its data using P4 table action. 
+The data model includes the ID for action and the action parameter fields, as well as associated attributes.
+
+In the example below, the action data specifies the port parameter type and width. 
+As the runtime passes port value of type uint32_t with field_id of 1, TdiData::setValue(const tdi_id_t &field_id, const uint32_t &value) method would set the value. 
+The value is stored depends on the child TdiData class implementation. 
+
+P4 Program:
+
+~ Begin P4Example
+action send(PortId_t port) {
+    ostd.egress_port = (PortId_t) port;
+}
+
+table l3_l4_match {
+        key = {
+                 hdr.ipv4.protocol : exact;
+        }
+        actions = {
+            send;
+        }
+        size = L3_L4_TABLE_SIZE;
+    }
+~ End P4Example
+
+Data Model:
+
+~ Begin Prototext
+"action_specs" : [
+  {
+    "id" : 18638031,
+    "name" : "ingress.send",
+    "action_scope" : "TableAndDefault",
+    "annotations" : [],
+    "data" : [
+       {
+         "id" : 1,
+         "name" : "port",
+         "repeated" : false,
+         "mandatory" : true,
+         "read_only" : false,
+         "annotations" : [],
+         "type" : {
+           "type" : "bytes",
+           "width" : 32
+        }
+      }
+    ]
+  },
+"data" : [],
+~End Prototext
+
+The metadata information of a data field is embedded in DataFieldInfo class. The DataFieldInfo objects are accessible from TableInfo object.  
+It maintains information like data type and size, which corresponds to a data’s attributes in TDI.JSON table data field. 
+Also, the public methods correspond to retrieving these data attributes in TDI JSON. For example, use tdi_field_data_type_e & DataFieldInfo::dataTypeGet() to get data type of a data field.
+
+## TableOperations
+
+The TableOperations class enables operations that are not limited to a table entry . A child TableOperations class implements a specific table operation.
+
+For example, use the following class to update all table counters from hardware.
+
+~ Begin P4Example
+TableOperations(const Table* table, const tdi_operations_type_e &oper_type);
+~ End P4Example
+
+## TableAttributes
+
+The TableAttributes class works with the table APIs to associate  a table-level attribute to a table instance. 
+A child TableAttributes class implements a specific table attribute. This can be used to support TDIRuntime StreamMessages.  
+
+For example, use the following class to set the idle timeout of a table and register callback for idle timeout notification.
+
+~ Begin P4Example
+TableAttributes(const Table *table, const tdi_attributes_type_e &attr_type)
+~ End P4Example
+
+**Note**: PNA architecture specifies some new table attributes. A couple of attributes are:
+
+	* ADD ON MISS: Some tables support automatic addition of new entries when a lookup of table entry fails in data plane.  As new entry additions are triggered from the data plane, asynchronous notifications will be available to update the control plane with new entries.
+	* IDLE TIMEOUT WITH AUTO DELETE: Some tables support automatic deletion of entries when idle timer has expired.  As with the IDLE TIMEOUT support in PSA, asynchronous notifications will be available to update the control plane with deleted entries. The IDLE TIMEOUT can also be updated from the pipeline itself based on certain packet fields and attributes.  
+
+# Known Limitations of Current TDI Version 
+
+* The table key data and table need to be overridden for every new table.
+* Runtime does not provide enough support for state management. 
+* The runtime layers need to keep a separate state that might deviated from low-level driver.
+* A lot of functionality must be implemented in different manger layer to avoid dual state management/synchronization in TDI C++ layer.
+* In case of API usage, users need to explicitly give an ID for both key and data field for entries they need to program.
 
 [BIB]
