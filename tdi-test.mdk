@@ -837,7 +837,9 @@ Value, mask, low, and high support input as byte arrays in network order. For ex
 
 The Optional key field type is specific to PSA architecture, and the support for it can be defined in the PSA architecture specific code. 
 
-PSA architecture APIs are available at [https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp](https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp) 
+PSA architecture APIs are available at 
+
+[https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp](https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp) 
 
 Use the following supported data types as the values of the key fields:
 
