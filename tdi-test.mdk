@@ -275,7 +275,7 @@ of P4 programmable and non-P4 fixed functions of a backend device in a uniform a
 
 Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
 of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. TDI is a Device Independent (DI) 
-interface and has “common code” in one place for devices. This characteristic helps PSAs [@PSA] or any architecture (for example, TNA or PNA) to adapt TDI environment.
+interface and has common code in one place for devices. This characteristic helps PSAs [@PSA] or any architecture (for example, TNA or PNA) to adapt TDI environment.
 
 ~ Figure { #fig-tdi-high-level-design-diagram; \
 caption: "TDI High Level Design Diagram" }
@@ -304,10 +304,10 @@ caption: "TDI JSON Workflow" }
 
 Characteristics of TDI implementation:
 
-*	TDI API header layer provides the common interface for all device capabilities.
-*	TDI C++ implementation layer overrides the TDI interface API with the functionality specific C++ methods.
-*	Backend functionality managers implement device-specific functionalities. 
-*	Backend functionality managers utilize the low-level driver for configuring a device. 
+* TDI API header layer provides the common interface for all device capabilities.
+* TDI C++ implementation layer overrides the TDI interface API with the functionality specific C++ methods.
+* Backend functionality managers implement device-specific functionalities. 
+* Backend functionality managers utilize the low-level driver for configuring a device. 
 
 ## P4 Programmable Functions
 
@@ -403,25 +403,25 @@ of application code upon changing the P4 program when adding new functionality o
 ## Uniform Interface
 
 TDI provides a uniform interface for both P4 objects (for example, tables, actions, and action selectors) and non-P4 fixed objects 
-(for example, port and QoS nodes). The uniform design concept provides the following capabilities :
+(for example, port and QoS nodes). The uniform design concept provides the following capabilities:
 
-*	Programming of all features using a common set of C and C++ APIs as the table keys and defining data through JSON files.
-*	The implementation of each feature is hidden behind API thru C++ polymorphism. 
-*	The capability of operations supported for each feature table can be learned in uniform manner.
-*	TDI C/C++ API is program and protocol independent.    
-*	TDI C/C++ API is P4 architecture independent. There are no P4 table or extern names reflected in the TDI API.
+* Programming of all features using a common set of C and C++ APIs as the table keys and defining data through JSON files.
+* The implementation of each feature is hidden behind API thru C++ polymorphism. 
+* The capability of operations supported for each feature table can be learned in uniform manner.
+* TDI C/C++ API is program and protocol independent.    
+* TDI C/C++ API is P4 architecture independent. There are no P4 table or extern names reflected in the TDI API.
 
 ## Dynamic Update 
 
 TDI is designed to support dynamic upgrade of feature table semantics. The dynamic update capability provides following capabilities:
 
-*	P4 tables support dynamic update of table keys and data (for example, `SetForwardingPipelineConfig` support) through separating table semantics separated in files. 
-*	Through optional use of CONTEXT files, some mapping of TDI user requests target specific configuration can also be dynamically updated. 
+* P4 tables support dynamic update of table keys and data (for example, `SetForwardingPipelineConfig` support) through separating table semantics separated in files. 
+* Through optional use of context files, some mapping of TDI user requests target specific configuration can also be dynamically updated. 
 
 # Infrastructure APIs
 
 TDI uses a set of C++ and C table APIs and infrastructure APIs. These APIs are program, protocol, and architecture independent which enable you to 
-use them in different platforms.  Infrastructure APIs work with the table APIs to enhance TDI usability. These APIs are not table-driven or JSON-driven.
+use them in different platforms. Infrastructure APIs work with the table APIs to enhance TDI usability. These APIs are not table-driven or JSON-driven.
 
 ## TdiInfo
 
@@ -439,7 +439,7 @@ tdi_status_t TdiInfo::tableFromNameGet(const std::string &name,
 ~ End Proto
 
 For each of the tables in a TdiInfo object, there are TableInfo objects which contains the metadata of each table. 
-TableInfo in turn contains a list of KeyFieldInfo, DataFieldInfo, and ActionInfo. These “info” classes contain the metadata for the corresponding TDI objects.  
+TableInfo in turn contains a list of `KeyFieldInfo`, `DataFieldInfo`, and `ActionInfo`. These info classes contain the metadata for the corresponding TDI objects.  
 
 For complete list of APIs, refer to the TDI API User Guide.
 
@@ -476,7 +476,7 @@ static tdi_status_t tdiModuleInit(
 
 ### DevMgr Class
 
-DevMgr class represents management entity of all devices  in a TDI library instance. Using DevMgr, you can add, remove, 
+DevMgr class represents management entity of all devices in a TDI library instance. Using DevMgr, you can add, remove, 
 and retrieve the information about the currently added devices.
 
 ~ Begin Proto
@@ -494,7 +494,7 @@ Target classes represent the device configuration.
 
 ### ProgramConfig Class
 
-ProgramConfig class represents a P4 program and a list of P4Pipeline built using the P4 program.  Each P4 program has its own TDI.JSON file.
+ProgramConfig class represents a P4 program and a list of P4Pipeline built using the P4 program. Each P4 program has its own TDI.JSON file.
 
 ~ Begin Proto
 ProgramConfig(const std::string &prog_name,
@@ -506,8 +506,8 @@ ProgramConfig(const std::string &prog_name,
 ## P4Pipeline Class
 
 A P4Pipeline class represents a P4 program that is mapped onto a target physical pipeline. Each pipeline might have its own context.json, 
-pipeline binary file, and the list of physical pipelines it maps onto.  The context.json file is used to map a P4 program to a physical pipeline target. 
-The scope vector is used to specify the list of physical pipelines that the P4 tables are shared.  The use of context.json and scope vector is optional.
+pipeline binary file, and the list of physical pipelines it maps onto. The context.json file is used to map a P4 program to a physical pipeline target. 
+The scope vector is used to specify the list of physical pipelines that the P4 tables are shared. The use of context.json and scope vector is optional.
 
 **Note**: For P4-DPDK [@P4DPDK], context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
 
@@ -553,18 +553,18 @@ Users can control parallelism using sessions.
 
 Characteristics of TDI Session:
 
-*	Requests made in a session are guaranteed to be executed in order.
-*	In case of multiple threads on a single session, the order of execution is not guaranteed.
-*	A single client thread can make requests on multiple sessions for different resources.
+* Requests made in a session are guaranteed to be executed in order.
+* In case of multiple threads on a single session, the order of execution is not guaranteed.
+* A single client thread can make requests on multiple sessions for different resources.
 
 ~ Begin Proto
 tdi_status_t tdi_session_create(const tdi_device_hdl *device_hdl, tdi_session_hdl **session); 
 tdi_status_t tdi_session_destroy(tdi_session_hdl *const session);
 ~ End Proto
 
-**Note**: For P4-DPDK [@P4DPDK], TDI APIs support synchronous response to the API calls.  The synchronous responses to TDI APIs indicate passing of 
-resource checking in software, not necessarily programming to hardware .  Asynchronous error events can be sent to a registered client for 
-any hardware programming failures.  For now, asynchronous response for the API calls is not supported.  However, asynchronous update for certain 
+**Note**: For P4-DPDK [@P4DPDK], TDI APIs support synchronous response to the API calls. The synchronous responses to TDI APIs indicate passing of 
+resource checking in software, not necessarily programming to hardware. Asynchronous error events can be sent to a registered client for 
+any hardware programming failures. For now, asynchronous response for the API calls is not supported. However, asynchronous update for certain 
 events from TDI is supported.
 
 ### Batching of Operation
@@ -630,7 +630,7 @@ caption: "Key and Data Representation" }
 A table can or cannot contain **Actions** fields. Actions are self-explanatory in Match Action Tables (MATs), where every data field inside 
 an action in the tdi.json represents an action param. In non-MAT tables, `actions` can be used to differentiate between various forms that a data can be formed. 
 
-The C- union construct can be realized using actions as follows:
+The C-union construct can be realized using actions as follows:
 
 ~ Begin Proto
 struct table_entry {
@@ -704,12 +704,12 @@ TDI supports the following types of tables:
 
   **Note**: TDI also supports standard table without default entry. It is like standard table, but there are no default entries.
 
-* Const  Table: A table that does not support entryAdd, entryMod, entryDel, defaultEntrySet, defaultEntryMod, and defaultEntryReset. This table type supports only get APIs like entryGet, entryGetFirst, entryGetNextN, usageGet, sizeGet, and defaultEnrtyGet.
+* Const  Table: A table that does not support `entryAdd`, `entryMod`, `entryDel`, `defaultEntrySet`, `defaultEntryMod`, and `defaultEntryReset. This table type supports only get APIs like `entryGet`, `entryGetFirst`, `entryGetNextN`, `usageGet`, `sizeGet`, and `defaultEnrtyGet`.
 
   **Note**: TDI also supports const table without default entry. It is like const table, but there are no default entries.
 
-* Keyless Table: A keyless table contains only one entry with data and that becomes the default entry. Only defaultEntryGet, defaultEntrySet, and defaultEntryReset are supported.
-* Modify-only Table: N entries always exist. An entryAdd and entryDel are not supported. The entryMod is used to change any value. clear ()  would reset all the entries of the table. There is no default entry associated with this table.
+* Keyless Table: A keyless table contains only one entry with data and that becomes the default entry. Only `defaultEntryGet`, `defaultEntrySet`, and `defaultEntryReset` are supported.
+* Modify-only Table: N entries always exist. An `entryAdd` and `entryDel` are not supported. The `entryMod` is used to change any value. clear ()  would reset all the entries of the table. There is no default entry associated with this table.
 
 TDI supports the following typical operations on a table:
 
@@ -747,7 +747,7 @@ Defines the structure of a key for a table entry. It contains multiple fields, a
 
 **Note**: Some tables are keyless. A keyless table contains only one entry with data and that becomes the default entry. 
 
-Only defaultEntryGet, defaultEntrySet, and defaultEntryReset  APIs are supported in the key field. The key object has following fields:
+Only `defaultEntryGet`, `defaultEntrySet`, and `defaultEntryReset` APIs are supported in the key field. The key object has following fields:
 
 * id: ID of the key.
 * name: Name of the key.
@@ -807,26 +807,26 @@ The child feature classes implement the table APIs for specific features.
 
 Table function consists of core functions and helper functions. 
 
-**Core Function**: It supports the operations related to the table itself. For example, entryMod and entryGet. 
+**Core Function**: It supports the operations related to the table itself. For example, `entryMod` and `entryGe`t. 
 
 For complete list of APIs and functions, refer to the TDI API User Guide.
 
-**Helper Function**: It supports the operations related to the key and data fields. For example, tableInfoGet, keyAllocate, and attributeAllocate.
+**Helper Function**: It supports the operations related to the key and data fields. For example, `tableInfoGet`, `keyAllocate`, and `attributeAllocate`.
 
 For complete list of APIs and functions, refer to the TDI API User Guide.
 
 ### TableInfo
 
-TableInfo class contains metadata of a TDI table in a TDI.JSON. It maintains information like KeyFieldInfo, DataFieldInfo, ActionInfo which corresponds 
+TableInfo class contains metadata of a TDI table in a TDI.JSON. It maintains information like `KeyFieldInfo`, `DataFieldInfo`, `ActionInfo` which corresponds 
 to a table’s constituent fields in TDI.JSON entry of a table. Also, the public methods correspond to the retrieving these constituent objects, 
-like keyFieldGet(), dataFieldGet(), actionGet().
+like `keyFieldGet()`, `dataFieldGet()`, `actionGet()`.
 
 ## TableKey
 
-The TableKey class abstracts the table key values. For each key field type, a child KeyFieldValue class represents the field (for example, `KeyFieldValueTernary`). 
-The supported key field types are Exact, Ternary, Range, and LPM.
+The TableKey class abstracts the table key values. For each key field type, a child `KeyFieldValue` class represents the field (for example, `KeyFieldValueTernary`). 
+The supported key field types are `Exact`, `Ternary`, `Range`, and `LPM`.
 
-The parameters of the value that a key field can take depends on the match type.  The supported value for different key field type are as follows: 
+The parameters of the value that a key field can take depends on the match type. The supported value for different key field type are as follows: 
 
 * Exact = (value); 
 * Ternary = (value, mask); 
@@ -837,9 +837,7 @@ Value, mask, low, and high support input as byte arrays in network order. For ex
 
 The Optional key field type is specific to PSA architecture, and the support for it can be defined in the PSA architecture specific code. 
 
-PSA architecture APIs are available at 
-
-[https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp](https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp) 
+PSA architecture APIs are available at [https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp](https://github.com/p4lang/tdi/blob/main/include/tdi/arch/psa/psa_table_key.hpp) 
 
 Use the following supported data types as the values of the key fields:
 
@@ -847,8 +845,7 @@ Use the following supported data types as the values of the key fields:
 
 	* All the above data types are mapped to data type enum TDI_FIELD_DATA_TYPE_UINT64, but the byte size details change as per the size.
 
-	* There are two constructor variants which can be used for each of the above types. One is the templatized version and the other is the byte array 
-	version (uint8_t).
+	* There are two constructor variants which can be used for each of the above types. One is the templatized version and the other is the byte array version (uint8_t).
 
 	* All match types are supported with all of these basic primitive types.
 
@@ -858,13 +855,14 @@ Use the following supported data types as the values of the key fields:
 
 * String: The supported string data type is std::string *.
 
-	* Currently there are two types of strings, unbound and bound. Unbound strings can take any value. Bound strings are limited to a set of options called “choices”, which is a set of string literals in the JSON. The latter is used for enums too.
+	* Currently there are two types of strings, unbound and bound. Unbound strings can take any value. 
+	Bound strings are limited to a set of options called “choices”, which is a set of string literals in the JSON. The latter is used for enums too.
 
 ### TableKey Data Model
 
-P4 compiler generates the data model of the key field using P4 program table key (for examle, hdr.ethernet.srcAddr) and associated P4 table match type defined. 
+P4 compiler generates the data model of the key field using P4 program table key (for example, hdr.ethernet.srcAddr) and associated P4 table match type defined. 
 Though the runtime would only have the key field ID, the generated data model will have key attributes and key field IDs. 
-The key field attributes are embedded in the KeyFieldValue object associated with the field ID. This ensures the correct setting of key field type.
+The key field attributes are embedded in the `KeyFieldValue` object associated with the field ID. This ensures the correct setting of key field type.
 
 The following examples show the TableKey data model for exact match type.
 
@@ -897,11 +895,11 @@ Data Model:
 The metadata information of a key field is embedded in KeyFieldInfo class. The KeyFieldInfo objects are accessible from TableInfo object. 
 It maintains information like match type and size, which corresponds to a key’s attributes in TDI.JSON table key field. 
 Also, the public methods correspond to retrieving these key attributes in TDI JSON. 
-For example, use tdi_match_type_e & KeyFieldInfo::matchTypeGet() to get match type of key field.
+For example, use `tdi_match_type_e & KeyFieldInfo::matchTypeGet()` to get match type of key field.
 
 ## TableData
 
-The TableData class supports the following data field related operations to set or get values.  TableData class methods support set and get of all supported fields. 
+The TableData class supports the following data field related operations to set or get values. TableData class methods support set and get of all supported fields. 
 Some of the supported fields are:
 
 * Basic Type: (uint8_t, uint16_t, uint32_t, uint64_t)
@@ -934,7 +932,7 @@ P4 compiler generates the data model for the action and its data using P4 table 
 The data model includes the ID for action and the action parameter fields, as well as associated attributes.
 
 In the example below, the action data specifies the port parameter type and width. 
-As the runtime passes port value of type uint32_t with field_id of 1, TdiData::setValue(const tdi_id_t &field_id, const uint32_t &value) method would set the value. 
+As the runtime passes port value of type uint32_t with field_id of 1, `TdiData::setValue(const tdi_id_t &field_id, const uint32_t &value)` method would set the value. 
 The value is stored depends on the child TdiData class implementation. 
 
 P4 Program:
@@ -984,7 +982,7 @@ Data Model:
 
 The metadata information of a data field is embedded in DataFieldInfo class. The DataFieldInfo objects are accessible from TableInfo object.  
 It maintains information like data type and size, which corresponds to a data’s attributes in TDI.JSON table data field. 
-Also, the public methods correspond to retrieving these data attributes in TDI JSON. For example, use tdi_field_data_type_e & DataFieldInfo::dataTypeGet() to get data type of a data field.
+Also, the public methods correspond to retrieving these data attributes in TDI JSON. For example, use `tdi_field_data_type_e & DataFieldInfo::dataTypeGet()` to get data type of a data field.
 
 ## TableOperations
 
