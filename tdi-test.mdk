@@ -332,8 +332,8 @@ fixed function objects from the TDI API to program the TDI API interface for the
 
 **Note 2**: The dynamic update of the fixed function JSON file is possible, but it is not supported in P4-DPDK [@P4DPDK] for now.
 
-The TDI library maps the APIs to the target device configurations. The mapping of fixed function TDI API to backend device configuration is hardcoded. 
-You can do such mapping through usage of a file like context.json. 
+The TDI library maps the APIs to the target device configurations. Targets might choose handwritten tdi.json files for fixed function that is compliant with 
+the schema. In this case, you need to write TDI backend to adhere to this json file for the table.
 
 The P4 programmable and non-P4 fixed function TDI tables follow the same schema, and the organization of the fields are common. 
 The following examples show compiler generated tdi.json for a P4 table and hand-written port.json for a port table.
@@ -735,9 +735,9 @@ The following section explains different JSON fields in the TDI table.
   **Note**: Some tables are hard dependent, for example, you cannot delete an entry in the action profile if it is present in a match action table.
 
 * has_const_default_action: Table has a constant default action. It is a boolean value.
-* key: Contains multiple key fields. Refer Step [#sec-key]  
-* action_specs: Contains action specific data fields. Refer Step [#sec-action_specs]
-* data: Contains multiple data fields. Refer Step [#sec-data]
+* key: Contains multiple key fields. See Step [#sec-key]. 
+* action_specs: Contains action specific data fields. See Step [#sec-action_specs].
+* data: Contains multiple data fields. See Step [#sec-data].
 * supported_operations: List of supported operations. Operations are table-wide and help in syncing all entries with hardware. These operations are target specific. 
 * attributes: Supported attributes of a table and are table-wide properties.
 
@@ -772,10 +772,10 @@ Only `defaultEntryGet`, `defaultEntrySet`, and `defaultEntryReset` APIs are supp
 	*  id: ID of the data.
 	*  name: Name of the data.
 	*  repeated: The field is repeated or not. If the field is repeated, it becomes an array type. 
-	*  mandatory: Refer Step [#sec-data]
-	*  read_only: Refer Step [#sec-data]
+	*  mandatory: See Step [#sec-data].
+	*  read_only: See Step [#sec-data].
 	*  annotations: A list of name and value pair. 
-	*  type: Refer Step [#sec-data]
+	*  type: See Step [#sec-data].
 
 ## Data
 
