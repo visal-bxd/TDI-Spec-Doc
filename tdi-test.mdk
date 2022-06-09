@@ -1029,7 +1029,7 @@ The following libraries are linked together to create a daemon supporting TDI:
 * Device dependent low-level libraries.
 * tdijsonparser: Library for parsing TDI JSON and providing metadata API for tables, key, and data object.
 
-The following figure shows the library structure overview:
+Figure [#fig-library-structure-overview] shows the library structure overview:
 
 ~ Figure { #fig-library-structure-overview; \
 caption: "Library Structure Overview" }
