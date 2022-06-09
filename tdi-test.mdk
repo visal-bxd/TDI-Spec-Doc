@@ -724,7 +724,8 @@ TDI uses two types of JSON files, a p4c compiler generated tdi.json file for P4 
 The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
 The following section explains different JSON fields in the TDI table.
 
-## Table
+## Table Structure
+
 * name: Name of the table.
 * id: ID of the table.
 * table_type: Type of table (examples: counter table, register table, match action table, and port configuration table). It is a string mapped to enum internally.
@@ -756,7 +757,7 @@ The key object has following fields:
 * id: ID of the key.
 * name: Name of the key.
 * repeated: The field is repeated or not. If the field is repeated, it becomes an array type.
-* annotations: See Section [#sec-table]
+* annotations: See Section [#sec-table-structure]
 * mandatory: Provide the key field if the mandatory field is true. If it is not mandatory, then a default value will be used. 
 * match_type:
 	* Exact: The entire value field is matched.  The data types that support exact are integer, bytes, boolean, and string.
@@ -778,7 +779,7 @@ The key object has following fields:
 	*  repeated: The field is repeated or not. If the field is repeated, it becomes an array type. 
 	*  mandatory: See Section [#sec-data].
 	*  read_only: See Section [#sec-data].
-	*  annotations: See Section [#sec-table].
+	*  annotations: See Section [#sec-table-structure].
 	*  type: See Section [#sec-data].
 
 ## Data
