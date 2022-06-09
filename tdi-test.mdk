@@ -314,7 +314,7 @@ Characteristics of TDI implementation:
 A P4 pipeline program is compiled to generate a set of files (tdi.json and context.json  ) which are used by P4Runtime [@P4Runtime], TDI library, 
 and the target pipeline.  P4Runtime is a gRPC [@gRPC] based specification for the management of the P4 device by a controller. The P4Runtime 
 client and server use the p4runtime.proto [@p4runtime.proto] as the common message format of the P4 program objects. P4Runtime server additionally 
-uses the metadata related to the P4 objects from the TDI API to program the TDI API interface.   
+uses the metadata related to the P4 objects from the TDI API to program the TDI API interface. P4 externs are converted to TDI objects.
 
 The externs of P4Runtime objects from p4info needs to be mapped to TDI objects from tdi.json.
 
@@ -333,7 +333,7 @@ fixed function objects from the TDI API to program the TDI API interface for the
 **Note 2**: The dynamic update of the fixed function JSON file is possible, but it is not supported in P4-DPDK [@P4DPDK] for now.
 
 The TDI library maps the APIs to the target device configurations. Targets might choose handwritten tdi.json files for fixed function that is compliant with 
-the schema. In this case, you need to write TDI backend to adhere to this json file for the table.
+the schema. In this case, target backend needs to write TDI backend to adhere to this json file for the table.
 
 The P4 programmable and non-P4 fixed function TDI tables follow the same schema, and the organization of the fields are common. 
 The following examples show compiler generated tdi.json for a P4 table and hand-written port.json for a port table.
@@ -507,7 +507,7 @@ ProgramConfig(const std::string &prog_name,
 
 A P4Pipeline class represents a P4 program that is mapped onto a target physical pipeline. Each pipeline might have its own context.json, 
 pipeline binary file, and the list of physical pipelines it maps onto. The context.json file is used to map a P4 program to a physical pipeline target. 
-The scope vector is used to specify the list of physical pipelines that the P4 tables are shared. The use of context.json and scope vector is optional.
+The scope vector is used to specify the list of physical pipelines that the P4 tables are shared.
 
 **Note**: For P4-DPDK [@P4DPDK], context files are used, and a P4Pipeline is mapped to a single physical pipeline. 
 
@@ -727,19 +727,23 @@ The following section explains different JSON fields in the TDI table.
 ## Table
 * name: Name of the table.
 * id: ID of the table.
-* table_type: Type of table. It is a string mapped to enum internally.
+* table_type: Type of table (examples: counter table, register table, match action table, and port configuration table). It is a string mapped to enum internally.
 * size: Maximum size of the table.
-* annotations: A list of name and value pair. 
+* annotations: A list of name and value pair. Annotations can be used per target to implement a functionality that is not directly present in accordance with schema. 
+For example, use annotations if a target backend wants to identify certain data field is of special type (such as port or mirroring configuration index). 
 * depends_on: ID of another table on which this table depends on. 
 
   **Note**: Some tables are hard dependent, for example, you cannot delete an entry in the action profile if it is present in a match action table.
 
 * has_const_default_action: Table has a constant default action. It is a boolean value.
-* key: Contains multiple key fields. See Step [#sec-key]. 
-* action_specs: Contains action specific data fields. See Step [#sec-action_specs].
-* data: Contains multiple data fields. See Step [#sec-data].
-* supported_operations: List of supported operations. Operations are table-wide and help in syncing all entries with hardware. These operations are target specific. 
-* attributes: Supported attributes of a table and are table-wide properties.
+* key: Contains multiple key fields. See Section [#sec-key]. 
+* action_specs: Contains action specific data fields. See Section [#sec-action_specs].
+* data: Contains multiple data fields. See Section [#sec-data].
+* supported_operations: List of supported operations. Operations are table-wide and are target specific. For example, a counter sync where all counter entries are synced with hardware.
+* attributes: Supported attributes of a table and these are table-wide properties. Attributes are similar to operations but they can change some properties 
+of a table operation. For example, entry scope attribute can be used to specify whether a table is symmetric or asymmetric across all physical pipes.
+
+**Caution**: Do not change the property of a table.
 
 ## Key
 
@@ -747,18 +751,18 @@ Defines the structure of a key for a table entry. It contains multiple fields, a
 
 **Note**: Some tables are keyless. A keyless table contains only one entry with data and that becomes the default entry. 
 
-Only `defaultEntryGet`, `defaultEntrySet`, and `defaultEntryReset` APIs are supported in the key field. The key object has following fields:
+The key object has following fields:
 
 * id: ID of the key.
 * name: Name of the key.
 * repeated: The field is repeated or not. If the field is repeated, it becomes an array type.
-* annotations: A list of name and value pair.
+* annotations: See Section [#sec-table]
 * mandatory: Provide the key field if the mandatory field is true. If it is not mandatory, then a default value will be used. 
 * match_type:
 	* Exact: The entire value field is matched.  The data types that support exact are integer, bytes, boolean, and string.
 	* Ternary: Value and mask are matched. The supported data type is integer.
 	* LPM: Value and prefix length are matched.
-* type: Details about type of the key field.
+* type: Details about data type of the key field.
 	*  type: If type is “bytes”, define the width field explicitly. Whereas, if the “type” field is any unsigned integer (for example, unit32), you need not define the width.
  	*  width: Represented in bit size. The bit size can be of any value. It does not necessarily need to be byte aligned.
 	
@@ -772,10 +776,10 @@ Only `defaultEntryGet`, `defaultEntrySet`, and `defaultEntryReset` APIs are supp
 	*  id: ID of the data.
 	*  name: Name of the data.
 	*  repeated: The field is repeated or not. If the field is repeated, it becomes an array type. 
-	*  mandatory: See Step [#sec-data].
-	*  read_only: See Step [#sec-data].
-	*  annotations: A list of name and value pair. 
-	*  type: See Step [#sec-data].
+	*  mandatory: See Section [#sec-data].
+	*  read_only: See Section [#sec-data].
+	*  annotations: See Section [#sec-table].
+	*  type: See Section [#sec-data].
 
 ## Data
 
@@ -791,7 +795,7 @@ A single data field might contain the following fields:
 	* repeated: The field is repeated or not. If the field is repeated, it becomes an array type.
 	* annotations: A list of name and value pair.
 	* container: A recursive collection of fields. It might contain multiple fields inside it, like C structures. Container holds fields such as mandatory, read-only, and singleton.
-	* type: Details about type of the data field.
+	* type: Details about data type of the data field.
 		* type: Unsigned integer (for example, unit32).
 		* choices: This field is displayed only when the “type” is a string.
 		* default_value: Values for integer type. If a field is not mandatory, a default value must be there.
@@ -1015,6 +1019,25 @@ As new entry additions are triggered from the data plane, asynchronous notificat
 * IDLE TIMEOUT WITH AUTO DELETE: Some tables support automatic deletion of entries when idle timer has expired. 
 As with the IDLE TIMEOUT support in PSA, asynchronous notifications will be available to update the control plane with deleted entries. 
 The IDLE TIMEOUT can also be updated from the pipeline itself based on certain packet fields and attributes.  
+
+# Library Details
+
+The following libraries are linked together to create a daemon supporting TDI:
+
+* target-syslibs : Library for the system abstraction layer functions to encapsulate OS services.
+* target-utils: Library for the common utilities and data structures used by bf-driver.
+* Device dependent low-level libraries.
+* tdijsonparser: Library for parsing TDI JSON and providing metadata API for tables, key, and data object.
+
+The following figure shows the library structure overview:
+
+~ Figure { #fig-library-structure-overview; \
+caption: "Library Structure Overview" }
+![library-structure-overview](media/library-structure-overview.png)
+~
+
+[library-structure-overview]: media/library-structure-overview.[svg,png] \
+{ height: 7cm; page-align: here }
 
 # Known Limitations of Current TDI Version 
 
