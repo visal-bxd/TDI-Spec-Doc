@@ -1,1 +1,349 @@
+Title : CLI User Guide
+Title Note: version 1.0.0
+Title Footer: &date;
+Author: Sayan Bandyopadhyay and James Choi
+Heading depth: 5
+Pdf Latex: xelatex
+Document Class: [11pt]article
+Package: [top=1in, bottom=1.25in, left=1in, right=1in]geometry
+Package: fancyhdr
+
+Tex Header:
+  \setlength{\headheight}{30pt}
+  \setlength{\emergencystretch}{2em}
+
+Bib: references.bib
+Bib Search Url:
+
+Script: https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js
+Script: bibref_no_title.js
+
+@if html {
+body.madoko {
+  font-family: utopia-std, serif;
+}
+title,titlenote,titlefooter,authors,h1,h2,h3,h4,h5 {
+  font-family: helvetica, sans-serif;
+  font-weight: bold;
+}
+pre, code {
+  font-family: monospace;
+  font-size: 10pt;
+}
+}
+
+@if tex {
+body.madoko {
+  font-family: UtopiaStd-Regular;
+}
+title,titlenote,titlefooter,authors {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+pre, code {
+  font-family: LuxiMono;
+  font-size: 75%;
+}
+}
+
+Colorizer: p4
+Colorizer: proto
+Colorizer: prototext
+Colorizer: cpp
+
+.token.keyword    {
+    font-weight: bold;
+}
+
+@if html {
+p4example {
+  replace: "~ Begin P4ExampleBlock&nl;\
+                 ````p4&nl;&source;&nl;````&nl;\
+                 ~ End P4ExampleBlock";
+  padding:6pt;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  border: solid;
+  background-color: #ffffdd;
+  border-width: 0.5pt;
+}
+}
+
+@if tex {
+p4example {
+  replace: "~ Begin P4ExampleBlock&nl;\
+                 ````p4&nl;&source;&nl;````&nl;\
+                 ~ End P4ExampleBlock";
+  breakable: true;
+  padding: 6pt;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  border: solid;
+  background-color: #ffffdd;
+  border-width: 0.5pt;
+}
+}
+
+@if html {
+pseudo {
+  replace: "~ Begin PseudoBlock&nl;\
+                 ````&nl;&source;&nl;````&nl;\
+                 ~ End PseudoBlock";
+  padding: 6pt;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  border: solid;
+  background-color: #e9fce9;
+  border-width: 0.5pt;
+}
+}
+
+@if tex {
+pseudo {
+  replace: "~ Begin PseudoBlock&nl;\
+                 ````&nl;&source;&nl;````&nl;\
+                 ~ End PseudoBlock";
+  breakable : true;
+  padding: 6pt;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  background-color: #e9fce9;
+  border: solid;
+  border-width: 0.5pt;
+}
+}
+
+@if html {
+cpp {
+  replace: "~ Begin CPPblock&nl;\
+                 ````cpp&nl;&source;&nl;````&nl;\
+                 ~ End CPPblock";
+  border: solid;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e9fce9;
+  border-width: 0.5pt;
+}
+}
+
+@if tex {
+cpp {
+  replace: "~ Begin CPPblock&nl;\
+                 ````cpp&nl;&source;&nl;````&nl;\
+                 ~ End CPPblock";
+  breakable: true;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e9fce9;
+  border: solid;
+  border-width: 0.5pt;
+}
+}
+
+@if html {
+proto {
+  replace: "~ Begin Protoblock&nl;\
+                 ````proto&nl;&source;&nl;````&nl;\
+                 ~ End Protoblock";
+  border: solid;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e6ffff;
+  border-width: 0.5pt;
+}
+}
+
+@if tex {
+proto {
+  replace: "~ Begin Protoblock&nl;\
+                 ````proto&nl;&source;&nl;````&nl;\
+                 ~ End Protoblock";
+  breakable: true;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e6ffff;
+  border: solid;
+  border-width: 0.5pt;
+}
+}
+
+@if html {
+prototext {
+  replace: "~ Begin Prototextblock&nl;\
+                 ````prototext&nl;&source;&nl;````&nl;\
+                 ~ End Prototextblock";
+  border: solid;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e6ffff;
+  border-width: 0.5pt;
+}
+}
+
+@if tex {
+prototext {
+  replace: "~ Begin Prototextblock&nl;\
+                 ````prototext&nl;&source;&nl;````&nl;\
+                 ~ End Prototextblock";
+  breakable: true;
+  margin-top: 6pt;
+  margin-bottom: 6pt;
+  padding: 6pt;
+  background-color: #e6ffff;
+  border: solid;
+  border-width: 0.5pt;
+  
+}
+}
+
+[TITLE]
+
+~ Begin Abstract
+Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
+of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. 
+~ End Abstract
+
+[TOC]
+[TOC=figures]
+[TOC=tables]
+
+# Introduction
+
+A Python shell command line interface can be used in TDI implementation to interact with tables and get table information.
+
+# Getting Started
+
+**Note**: All the examples in this guide use tna_exact_match.p4  program to explain the concept and command output.
+
+1. Compile the P4 program (for example, tna_exact_match.p4).
+
+2. Make sure that the bf-driver is running and TDI is enabled.
+
+3. Start  the TDI shell by running the run_switchd.sh script in the tools directory.
+
+~ Begin Proto
+root@user: /home# ./tools/run_switchd.sh -p tna_exact_match
+~ End Proto
+
+where, home is the directory in which the P4 program is installed and tna_exact_match is the P4 program.
+
+4. Start the TDI python shell by entering tdi_python from the command-line. Now the TDI Python shell is ready to use.
+
+~ Begin Proto
+tdishell> tdi_python
+In [1]: 
+~ End Proto
+
+**Note**: You have full access to Python and its standard libraries/features to make this interface looks like a CLI.
+
+# Navigation
+
+The root node of the interface is the tdi object. The direct children of the node are loaded into the global namespace. 
+The shell prompt also changes to indicate which node is currently loaded.
+
+In case of P4 programs, the nodes are organized in the order of `tdi.<p4_program_name>.<dotted_prefix>.<dotted_prefix>.<table_name>`. 
+The prefix nodes are inserted between the program name and table name based on the fully qualified table names.
+
+~ TableFigure { #cli-basic-operations; \
+    caption: "CLI Basic Operations"; \
+    page-align: forcehere; }
+|--------------------------------|------------------------------------------------------------|
+|     Terms                      |        Definitions                                         |
++---{width:4cm}------------------+------------------------------------------------------------+
+| Navigate to parent node        | Enter the parent node name, that is `tdi`.                 |
+|                                | `In [1]: tdi `                                             |
+|                                | `------> tdi()`                                            |
+|                                | `Available symbols:`                                       |
+|                                | `dump                 - Command`                           |
+|                                | `info                 - Command`                           |
+|                                | `tna_exact_match      - Node`                              |
+|                                | `tdi>`                                                     |
+|                                | **Note**: You need not add parentheses when calling the tdi|
+|                                | object. In unambiguous cases, parentheses are automatically|
+|                                | inserted, and the shell indicates the autocompletion.      |
++--------------------------------+------------------------------------------------------------+
+| Navigate to node’s child       | Enter the complete program and table name. For example,    |
+|                                | call tdi.tna_exact_match.pipe.SwitchIngress.forward        |
+|                                | from shell.                                                |
+|                                | In [1]: tdi.tna_exact_match.pipe.SwitchIngress.forward     |
+| directly                       | and traffic management).                                   |
++--------------------------------+------------------------------------------------------------+
+| gRPC                            | An open source high performance Remote Procedure Call (RPC)|
+|                                |  framework.                                                |
++--------------------------------+------------------------------------------------------------+
+| MAT                            | Match Action Table                                         |
++--------------------------------+------------------------------------------------------------+
+| P4C                            | P4 Compiler                                                |
++--------------------------------+------------------------------------------------------------+
+| P4Runtime                      | The runtime control plane specification for PSA.           |
++--------------------------------+------------------------------------------------------------+
+| PSA                            | Portable Switch Architecture, a target architecture that   |
+|                                | describes common capabilities of network switch devices    |
+|                                | that process and forward packets across multiple interface |
+|                                | ports.                                                     |
++--------------------------------+------------------------------------------------------------+
+| Programmable Function          | P4 programmable functions.                                 |
++--------------------------------+------------------------------------------------------------+
+| PNA                            | Portable NIC Architecture                                  |
++--------------------------------+------------------------------------------------------------+
+| tdi.json / TDI.json            | File generated by P4C frontend according to TDI schema     |
+|                                | for use in the runtime control plane.                      |
++--------------------------------+------------------------------------------------------------+
+| TDI Frontend                   | The frontend layer that implements the TDI APIs and        |
+|                                | converts them to the form that the TDI target backend      |
+|                                | expects.                                                   |
++--------------------------------+------------------------------------------------------------+
+| TDI Implementation             | TDI backend C++ classes that implement functionalities and |
+|                                |  the corresponding functionality-specific TDI JSON files.  |
++--------------------------------+------------------------------------------------------------+
+| TDI Interface                  | TDI C/C++ API and the TDI parser of the TDI schema.        |
+|                                |                                                            |
++--------------------------------+------------------------------------------------------------+
+| TDI Repo                       | Device independent TDI frontend C/C++ code that is         |
+|                                | shared by multiple devices.                                |
++--------------------------------+------------------------------------------------------------+
+| TDI Target Backend             | The target specific backend that configures the target     |
+|                                | pipeline using the metadata from the context.json          |
++--------------------------------+------------------------------------------------------------+
+| TNA                            | Tofino Native Architecture                                 |
++--------------------------------+------------------------------------------------------------+
+~
+
+# Introduction to TDI
+
+Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
+of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. TDI is a Device Independent (DI) 
+interface and has common code in one place for devices. This characteristic helps PSAs [@PSA] or any architecture (for example, TNA or PNA) to adapt TDI environment.
+
+~ Figure { #fig-tdi-high-level-design-diagram; \
+caption: "TDI High Level Design Diagram" }
+![tdi-high-level-design-diagram](media/tdi-high-level-design-diagram.png)
+~
+
+[tdi-high-level-design-diagram]: media/tdi-high-level-design-diagram.[svg,png] \
+{ height: 7cm; page-align: here }
+
+The fixed and the P4 programmable functions use common set of JSON schema that describes all functions as table key and data attributes. 
+A uniform API can be used for programming both fixed and P4 programmable functions. Also, the usage of a separate JSON file for defining 
+the semantics of the TDI API enables the syntax of the API to be uniform for all target devices and all features. It also enhances the dynamic 
+upgradability of the network feature attributes.  
+
+# TDI JSON Workflow
+
+TDI.JSON file acts as a contract between the control plane and frontend. TDI backend is implemented using the context.json file.
+
+~ Figure { #fig-tdi-json-workflow; \
+caption: "TDI JSON Workflow" }
+![tdi-json-workflow](media/tdi-json-workflow.png)
+~
+
+[tdi-json-workflow]: media/tdi-json-workflow.[svg,png] \
+{ height: 7cm; page-align: here }
+
+Characteristics of TDI implementation:
 
