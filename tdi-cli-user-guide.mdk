@@ -204,8 +204,7 @@ prototext {
 [TITLE]
 
 ~ Begin Abstract
-Table Driven Interface (TDI) is a runtime control plane specification and a set of APIs that enable the management 
-of P4 programmable and non-P4 fixed functions of a backend device in a uniform and dynamic way. 
+TDI CLI is a Python shell command line interface used to interact with tables and get table information. 
 ~ End Abstract
 
 [TOC]
