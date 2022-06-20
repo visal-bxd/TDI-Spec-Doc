@@ -219,11 +219,11 @@ A Python shell command line interface can be used in TDI implementation to inter
 
 **Note**: All the examples in this guide use tna_exact_match.p4  program to explain the concept and command output.
 
-1. Compile the P4 program (for example, tna_exact_match.p4).
+1) Compile the P4 program (for example, tna_exact_match.p4).
 
-2. Make sure that the bf-driver is running and TDI is enabled.
+2) Make sure that the bf-driver is running and TDI is enabled.
 
-3. Start  the TDI shell by running the run_switchd.sh script in the tools directory.
+3) Start  the TDI shell by running the run_switchd.sh script in the tools directory.
 
 ~ Begin Proto
 root@user: /home# ./tools/run_switchd.sh -p tna_exact_match
@@ -231,7 +231,7 @@ root@user: /home# ./tools/run_switchd.sh -p tna_exact_match
 
 where, home is the directory in which the P4 program is installed and tna_exact_match is the P4 program.
 
-4. Start the TDI python shell by entering tdi_python from the command-line. Now the TDI Python shell is ready to use.
+4) Start the TDI python shell by entering tdi_python from the command-line. Now the TDI Python shell is ready to use.
 
 ~ Begin Proto
 tdishell> tdi_python
@@ -340,12 +340,13 @@ tdi.tna_exact_match.pipe.SwitchIngress>
 The get command prints information about the object we just retrieved. If you do not want to print this output, set the print_ents parameter to False.
 
 ~ Begin Proto
-tdi.tna_exact_match.pipe.SwitchIngress>entry_list = forward.get(dst_addr="*", **print_ents=False**, regex=True)
+tdi.tna_exact_match.pipe.SwitchIngress>entry_list = forward.get(dst_addr="*", 
+print_ents=False, regex=True)
 tdi.tna_exact_match.pipe.SwitchIngress>
 ~ End Proto
 
 To get multiple entries, you can perform a regex search on key fields. When regex=True, entries will be returned in a list. 
-The default for each parameter is to accept all values for the corresponding field
+The default for each parameter is to accept all values for the corresponding field.
 
 ## Using Dump Command
 
@@ -446,7 +447,8 @@ mandatory parameters of add_with_hit argument.
 tdi.tna_exact_match.pipe.SwitchIngress.forward> help(add_with_hit)
 Help on method add_with_hit in module tdicli:
 
-add_with_hit(dst_addr=None, port=None, pipe=None, gress_dir=None, prsr_id=None) method of tdicli.BFLeaf instance
+add_with_hit(dst_addr=None, port=None, pipe=None, gress_dir=None, prsr_id=None) 
+method of tdicli.BFLeaf instance
     Add entry to forward table with action: SwitchIngress.hit
 
     Parameters:
@@ -460,11 +462,11 @@ tdi.tna_exact_match.pipe.SwitchIngress.forward>
 
 Current Python CLI framework allows you to import third-party code into the shell. Perform the following steps to run third-party codes in a shell:
 
-1. Place the python file in $SDE_INSTALL/lib/python3.x.
+1) Place the python file in $SDE_INSTALL/lib/python3.x.
 
-2. In the shell, enter the import `<filename>` command to load the code. 
+2) In the shell, enter the import `<filename>` command to load the code. 
 
-**Note 1**: You can also specify a file with the -b option
+**Note 1**: You can also specify a file with the -b option.
 
 **Note 2**: The shell’s working directory is the driver’s install directory. To receive a CLI prompt after executing the -b script, pass the -i option as well. 
 
