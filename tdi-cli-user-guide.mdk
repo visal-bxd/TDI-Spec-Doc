@@ -433,7 +433,7 @@ tdi.tna_exact_match.pipe.SwitchIngress>
 
 The update command updates the state of a TableEntry object from its corresponding table. You can delete an entry represented by a TableEntry object with the remove method.
 
-**Note**: In addition to **_str_and_repr_**, TableEntries also have raw() and json() methods available for exposing the contents of the objects.
+**Note**: In addition to **_str_ and _repr_**, TableEntries also have raw() and json() methods available for exposing the contents of the objects.
 
 #	Getting Help
 
