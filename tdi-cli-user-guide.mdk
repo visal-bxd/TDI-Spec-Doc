@@ -224,15 +224,12 @@ A Python shell command line interface can be used in TDI implementation to inter
 2) Make sure that the bf-driver is running and TDI is enabled.
 
 3) Start  the TDI shell by running the run_switchd.sh script in the tools directory.
-
 ~ Begin Proto
 root@user: /home# ./tools/run_switchd.sh -p tna_exact_match
 ~ End Proto
-
 where, home is the directory in which the P4 program is installed and tna_exact_match is the P4 program.
 
 4) Start the TDI python shell by entering tdi_python from the command-line. Now the TDI Python shell is ready to use.
-
 ~ Begin Proto
 tdishell> tdi_python
 In [1]: 
@@ -436,7 +433,7 @@ tdi.tna_exact_match.pipe.SwitchIngress>
 
 The update command updates the state of a TableEntry object from its corresponding table. You can delete an entry represented by a TableEntry object with the remove method.
 
-**Note**: In addition to __str__ and __repr__, TableEntries also have raw() and json() methods available for exposing the contents of the objects.
+**Note**: In addition to _str_and_repr_, TableEntries also have raw() and json() methods available for exposing the contents of the objects.
 
 #	Getting Help
 
@@ -464,7 +461,7 @@ Current Python CLI framework allows you to import third-party code into the shel
 
 1) Place the python file in $SDE_INSTALL/lib/python3.x.
 
-2) In the shell, enter the import `<filename>` command to load the code. 
+2) In the shell, enter the `import <filename>` command to load the code. 
 
 **Note 1**: You can also specify a file with the -b option.
 
@@ -478,7 +475,8 @@ The following example shows a function you can copy-paste into an empty python f
 def example_demo(tdi):
     tdi.tna_exact_match.pipe.SwitchIngress.forward.add_with_hit(dst_addr=0xABCDEF)
     x = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr=0xABCDEF)
-    entry_list = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr="*", print_ents=False, regex=True)
+    entry_list = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr="*", 
+    print_ents=False, regex=True)
     tdi.tna_exact_match.pipe.SwitchIngress.forward.dump()
     blob = tdi.tna_exact_match.pipe.SwitchIngress.forward.dump(json=True)
     for x in tdi.tna_exact_match.pipe.SwitchIngress.forward.get(regex=True, print_ents=False):
