@@ -473,17 +473,17 @@ The following example shows a function you can copy-paste into an empty python f
 
 ~ Begin p4example
 def example_demo(tdi):
-    tdi.tna_exact_match.pipe.SwitchIngress.forward.add_with_hit(dst_addr=0xABCDEF)
-    x = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr=0xABCDEF)
-    entry_list = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr="*", 
-    print_ents=False, regex=True)
-    tdi.tna_exact_match.pipe.SwitchIngress.forward.dump()
-    blob = tdi.tna_exact_match.pipe.SwitchIngress.forward.dump(json=True)
-    for x in tdi.tna_exact_match.pipe.SwitchIngress.forward.get(regex=True, print_ents=False):
-        x.remove()
-    tdi.tna_exact_match.pipe.SwitchIngress.forward.add_from_json(blob)
-    ent = tdi.tna_exact_match.pipe.SwitchIngress.forward.entry_with_miss(dst_addr=2)
-    ent.push()
+   tdi.tna_exact_match.pipe.SwitchIngress.forward.add_with_hit(dst_addr=0xABCDEF)
+   x = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr=0xABCDEF)
+   entry_list = tdi.tna_exact_match.pipe.SwitchIngress.forward.get(dst_addr="*", 
+   print_ents=False, regex=True)
+   tdi.tna_exact_match.pipe.SwitchIngress.forward.dump()
+   blob = tdi.tna_exact_match.pipe.SwitchIngress.forward.dump(json=True)
+   for x in tdi.tna_exact_match.pipe.SwitchIngress.forward.get(regex=True, print_ents=False):
+       x.remove()
+   tdi.tna_exact_match.pipe.SwitchIngress.forward.add_from_json(blob)
+   ent = tdi.tna_exact_match.pipe.SwitchIngress.forward.entry_with_miss(dst_addr=2)
+   ent.push()
 ~ End p4example
 
 By placing this code in a file named **example.py** and placing that file in the above directory, you can call the defined function as follows:
