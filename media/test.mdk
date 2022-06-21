@@ -224,11 +224,11 @@ devices or switches.
 | P4 declaration(s)              | Compiler-allocated ID(s)                                                |
 +---{width:4cm}------------------+-------------------------------------------------------------------------+
 | singleton                      | Contains only one field.                                                |
-|                                |  * id: ID of the field.                                                 |
-|                                |  * Name of the field.                                                   |
-|                                |  * type: Details about data type of the data field.                     |
-|                                |    * type: Unsigned integer (for example, unit32).                      |
-|                                |    * choices: This field is displayed only when the “type” is a string. |
+|                                |  1. id: ID of the field.                                                 |
+|                                |  2. Name of the field.                                                   |
+|                                |  3. type: Details about data type of the data field.                     |
+|                                |    a. type: Unsigned integer (for example, unit32).                      |
+|                                |    b. choices: This field is displayed only when the “type” is a string. |
 +--------------------------------+-------------------------------------------------------------------------+
 | `@id(0x12ab34) table tA...`    | **Error** (same ID suffixes for 2 objects of the same type)              |
 | `@id(0x12ab34) table tB...`    |                                                                         |
